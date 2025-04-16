@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +44,7 @@ public class User implements UserDetails {
     @Column(name = "public_profile", nullable = false)
     private boolean publicProfile;
     @Column(name = "registration_date", nullable = false)
-    private LocalDate registrationDate;
+    private LocalDateTime registrationDate;
 
 
     public User(String name, String surname, String email, String password) {
@@ -54,7 +54,7 @@ public class User implements UserDetails {
         this.password = password;
         this.role = Role.USER; // everyone is created as USER by default
         this.publicProfile = true; // default value for public profile
-        this.registrationDate = LocalDate.now(); // set registration date to today
+        this.registrationDate = LocalDateTime.now(); // set registration date to today
     }
 
     @Override
@@ -64,7 +64,6 @@ public class User implements UserDetails {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", role=" + role +
                 ", publicProfile=" + publicProfile +
                 ", registrationDate=" + registrationDate +
@@ -79,5 +78,25 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return this.getEmail(); // this method is used by Spring Security to get the email instead of the username
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // I don't want to expire the account
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // I don't want to lock the account
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // I don't want to expire the credentials
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // I don't want to disable the account
     }
 }
