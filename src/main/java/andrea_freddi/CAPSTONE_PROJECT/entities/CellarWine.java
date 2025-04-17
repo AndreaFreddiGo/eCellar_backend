@@ -28,8 +28,8 @@ public class CellarWine {
     private int quantity;
     @Column(name = "bottle_size", nullable = false)
     private BottleSize size;
-    @Column(name = "public_wine", nullable = false)
-    private boolean publicWine;
+    @Column(name = "is_public", nullable = false)
+    private boolean isPublic;
     @Column(name = "personal_notes")
     private String personalNotes;
     @Column(name = "purchase_date")
@@ -38,6 +38,8 @@ public class CellarWine {
     private BigDecimal purchasePrice;
     @Column(name = "asking_price")
     private BigDecimal askingPrice;
+    @Column(name = "my_score")
+    private Float myScore;
 
     // relations between CellarWine and other entities: User, Wine and Cellar
     // a CellarWine is associated with a User, a Wine and a Cellar
@@ -60,7 +62,7 @@ public class CellarWine {
         this.quantity = quantity;
         this.user = user;
         this.wine = wine;
-        this.publicWine = publicWine;
+        this.isPublic = publicWine;
     }
 
     @Override
@@ -69,7 +71,7 @@ public class CellarWine {
                 "id=" + id +
                 ", quantity=" + quantity +
                 ", size=" + size +
-                ", publicWine=" + publicWine +
+                ", publicWine=" + isPublic +
                 ", personalNotes='" + personalNotes + '\'' +
                 ", purchaseDate=" + purchaseDate +
                 ", purchasePrice=" + purchasePrice +

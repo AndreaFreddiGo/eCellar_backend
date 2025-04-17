@@ -52,14 +52,13 @@ public class Wine {
     private Integer beginConsumeYear;
     @Column(name = "end_consume_year")
     private Integer endConsumeYear;
+    @Enumerated(EnumType.STRING)
     private Drinkability drinkability;
     private String barcode;
     @Column(name = "professional_score")
     private Float professionalScore;
     @Column(name = "community_score")
     private Float communityScore;
-    @Column(name = "my_score")
-    private Float myScore;
 
     @OneToMany(mappedBy = "wine")
     private List<CellarWine> cellarWines;

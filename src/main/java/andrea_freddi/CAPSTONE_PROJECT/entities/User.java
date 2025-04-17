@@ -34,8 +34,10 @@ public class User implements UserDetails {
     private String name;
     @Column(nullable = false)
     private String surname;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false, unique = true)
+    private String username;
     @Column(nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)
@@ -49,17 +51,18 @@ public class User implements UserDetails {
     // relations between User and other entities: CellarWine and Cellar
     // a User can have multiple CellarWines and multiple Cellars
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CellarWine> cellarWines;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cellar> cellars;
 
 
-    public User(String name, String surname, String email, String password) {
+    public User(String name, String surname, String email, String username, String password) {
         this.name = name;
         this.surname = surname;
         this.email = email;
+        this.username = username;
         this.password = password;
         this.role = Role.USER; // everyone is created as USER by default
         this.publicProfile = true; // default value for public profile
@@ -73,6 +76,7 @@ public class User implements UserDetails {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
                 ", role=" + role +
                 ", publicProfile=" + publicProfile +
                 ", registrationDate=" + registrationDate +
@@ -86,7 +90,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.getEmail(); // this method is used by Spring Security to get the email instead of the username
+        return this.getUsername(); // this method is used by Spring Security to get the username
     }
 
     @Override
