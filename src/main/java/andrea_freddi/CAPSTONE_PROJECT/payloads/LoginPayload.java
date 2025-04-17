@@ -1,9 +1,22 @@
 package andrea_freddi.CAPSTONE_PROJECT.payloads;
 
-// This class is used to receive the login data from the client (email/username and password)
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+/**
+ * This class is used to receive the login data from the client
+ * It contains the fields that are required for login
+ * The fields are validated using Jakarta Bean Validation annotations
+ */
 
 public record LoginPayload(
-        String identifier, // it could be email or username
+
+        @NotBlank(message = "Email or username is required")
+        String identifier,
+
+        @NotBlank(message = "Password is required")
+        @Size(min = 4, message = "Password must be at least 4 characters")
         String password
+
 ) {
 }

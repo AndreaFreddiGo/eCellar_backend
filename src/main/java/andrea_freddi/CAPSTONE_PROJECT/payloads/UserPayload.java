@@ -5,6 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * UserPayload is a record class that represents the payload for user registration
+ * It contains fields for name, surname, email, username, and password
+ * The class uses Jakarta Bean Validation annotations to enforce validation rules on the fields
+ */
+
 public record UserPayload(
 
         @NotBlank(message = "Name cannot be blank")
