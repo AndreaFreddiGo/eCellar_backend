@@ -46,6 +46,15 @@ public class User implements UserDetails {
     @Column(name = "registration_date", nullable = false)
     private LocalDateTime registrationDate;
 
+    // relations between User and other entities: CellarWine and Cellar
+    // a User can have multiple CellarWines and multiple Cellars
+
+    @OneToMany(mappedBy = "user")
+    private List<CellarWine> cellarWines;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cellar> cellars;
+
 
     public User(String name, String surname, String email, String password) {
         this.name = name;

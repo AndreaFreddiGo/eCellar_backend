@@ -27,7 +27,7 @@ public class Wine {
     private String name;
     @Column(nullable = false)
     private String producer;
-    private Integer year;
+    private Integer vintage;
     private Float abv;
     @ElementCollection
     @CollectionTable(name = "wine_grape_varieties", joinColumns = @JoinColumn(name = "wine_id"))
@@ -38,28 +38,38 @@ public class Wine {
     private String country;
     private String region;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private WineColor color;
+    @Enumerated(EnumType.STRING)
     private WineSweetness sweetness;
+    @Enumerated(EnumType.STRING)
     private WineEffervescence effervescence;
+    @Enumerated(EnumType.STRING)
     private WineCategory category;
     private String description;
     private String imageUrl;
+    @Column(name = "begin_consume_year")
+    private Integer beginConsumeYear;
+    @Column(name = "end_consume_year")
+    private Integer endConsumeYear;
+    private Drinkability drinkability;
+    private String barcode;
+    @Column(name = "professional_score")
+    private Float professionalScore;
+    @Column(name = "community_score")
+    private Float communityScore;
+    @Column(name = "my_score")
+    private Float myScore;
 
-    public Wine(String name, String producer, Integer year, Float abv, List<String> grapeVarieties, String appellation, String country, String region, WineColor color, WineSweetness sweetness, WineEffervescence effervescence, WineCategory category, String description, String imageUrl) {
+    @OneToMany(mappedBy = "wine")
+    private List<CellarWine> cellarWines;
+
+    public Wine(String name, String producer, String country, WineColor color, List<String> grapeVarieties) {
         this.name = name;
         this.producer = producer;
-        this.year = year;
-        this.abv = abv;
-        this.grapeVarieties = grapeVarieties;
-        this.appellation = appellation;
         this.country = country;
-        this.region = region;
         this.color = color;
-        this.sweetness = sweetness;
-        this.effervescence = effervescence;
-        this.category = category;
-        this.description = description;
-        this.imageUrl = imageUrl;
+        this.grapeVarieties = grapeVarieties;
     }
 
     @Override
@@ -68,7 +78,7 @@ public class Wine {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", producer='" + producer + '\'' +
-                ", year=" + year +
+                ", vintage=" + vintage +
                 ", abv=" + abv +
                 ", grapeVarieties=" + grapeVarieties +
                 ", appellation='" + appellation + '\'' +
