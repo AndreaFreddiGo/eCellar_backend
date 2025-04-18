@@ -4,6 +4,7 @@ import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.PasswordUpdatePayload;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.UserPayload;
+import andrea_freddi.CAPSTONE_PROJECT.payloads.UserUpdatePayload;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -85,7 +86,7 @@ public class UsersService {
     }
 
     // This method updates an existing user
-    public User findByIdAndUpdate(UUID id, UserPayload body) {
+    public User findByIdAndUpdate(UUID id, UserUpdatePayload body) {
         User found = this.findById(id);
         String normalizedEmail = body.email().toLowerCase();
         String normalizedUsername = body.username().toLowerCase();
@@ -97,22 +98,28 @@ public class UsersService {
             });
         }
 
-        // Check if username is being changed and already exists
+        // Check if the username is being changed and already exists
         if (!found.getUsername().equalsIgnoreCase(normalizedUsername)) {
             this.usersRepository.findByUsername(normalizedUsername).ifPresent(existingUser -> {
                 throw new BadRequestException("Username '" + normalizedUsername + "' is already taken!");
             });
         }
 
-        // Update the user fields
+        // Update all fields
         found.setName(body.name());
         found.setSurname(body.surname());
         found.setEmail(normalizedEmail);
         found.setUsername(normalizedUsername);
-        found.setPassword(bcrypt.encode(body.password()));
+        found.setProfilePicture(body.profilePicture());
+        found.setPhone(body.phone());
+        found.setBiography(body.biography());
+        found.setBirthDate(body.birthDate());
+        found.setPreferredLanguage(body.preferredLanguage());
+        found.setPublicProfile(body.publicProfile());
 
         return this.usersRepository.save(found);
     }
+
 
     // This method updates a user's password
     public User findByIdAndUpdatePassword(UUID id, PasswordUpdatePayload body) {
