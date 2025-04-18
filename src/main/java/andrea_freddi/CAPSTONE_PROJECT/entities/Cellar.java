@@ -31,14 +31,14 @@ public class Cellar {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User owner;
+    private User user;
 
     @OneToMany(mappedBy = "cellar", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CellarWine> cellarWines;
 
-    public Cellar(String name, User owner) {
+    public Cellar(String name, User user) {
         this.name = name;
-        this.owner = owner;
+        this.user = user;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Cellar {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", ownerId=" + (owner != null ? owner.getId() : "null") +
+                ", userId=" + (user != null ? user.getId() : "null") +
                 '}';
     }
 }

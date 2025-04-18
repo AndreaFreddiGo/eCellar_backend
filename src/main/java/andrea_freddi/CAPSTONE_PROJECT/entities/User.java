@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +41,15 @@ public class User implements UserDetails {
     private String username;
     @Column(nullable = false)
     private String password;
+    private Address address;
+    private String biography;
+    private String phone;
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+    @Column(name = "profile_picture")
+    private String profilePicture;
+    @Column(name = "preferred_language")
+    private String preferredLanguage;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
@@ -48,14 +58,17 @@ public class User implements UserDetails {
     @Column(name = "registration_date", nullable = false)
     private LocalDateTime registrationDate;
 
-    // relations between User and other entities: CellarWine and Cellar
-    // a User can have multiple CellarWines and multiple Cellars
+    // relations between User and other entities: CellarWine, Cellar and Address
+    // a User can have multiple CellarWines, multiple Cellars and multiple Addresses
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CellarWine> cellarWines;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cellar> cellars;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Address> addresses;
 
 
     public User(String name, String surname, String email, String username, String password) {

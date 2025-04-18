@@ -2,7 +2,7 @@ package andrea_freddi.CAPSTONE_PROJECT.services;
 
 import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
-import andrea_freddi.CAPSTONE_PROJECT.payloads.PasswordPayload;
+import andrea_freddi.CAPSTONE_PROJECT.payloads.PasswordUpdatePayload;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.UserPayload;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +115,7 @@ public class UsersService {
     }
 
     // This method updates a user's password
-    public User findByIdAndUpdatePassword(UUID id, PasswordPayload body) {
+    public User findByIdAndUpdatePassword(UUID id, PasswordUpdatePayload body) {
         User found = this.findById(id);
         // Check if the old password matches the current password
         if (!bcrypt.matches(body.currentPassword(), found.getPassword())) {

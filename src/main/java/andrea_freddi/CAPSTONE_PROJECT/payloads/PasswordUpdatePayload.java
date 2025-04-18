@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 
 // This class is used to create a payload for the password change request
 
-public record PasswordPayload(
+public record PasswordUpdatePayload(
 
         @NotBlank(message = "Current password is required")
         String currentPassword,
