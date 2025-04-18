@@ -1,6 +1,6 @@
 package andrea_freddi.CAPSTONE_PROJECT.exception;
 
-// creo l'eccezione NotFoundException per gestire gli errori 404
+// This class is used to handle Not Found exceptions in the application
 
 import java.util.UUID;
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
-// creo un handler che mi aiuterà a gestire le eccezioni in modo centralizzato
+// This class handles all the exceptions that can be thrown in the application
 
 @RestControllerAdvice
 public class ExceptionsHandler {
