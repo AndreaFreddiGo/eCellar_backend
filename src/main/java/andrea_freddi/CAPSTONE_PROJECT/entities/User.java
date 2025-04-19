@@ -41,7 +41,6 @@ public class User implements UserDetails {
     private String username;
     @Column(nullable = false)
     private String password;
-    private Address address;
     private String biography;
     private String phone;
     @Column(name = "birth_date")
