@@ -4,7 +4,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-/**
+/*
  * UserUpdatePayload is a record that represents the payload for updating user information.
  * It contains fields for name, surname, email, username, biography, phone, birthDate,
  * profilePicture, preferredLanguage, and publicProfile.

@@ -17,7 +17,7 @@ import java.util.UUID;
 
 // creates the User class and manages Getter and Setter and empty constructor with lombok
 // I manage the constructor myself as well as toString
-// implements UserDetails which will allow me to manage different roles
+// implements UserDetails which will allow me to manage different roles.
 // the implementation also required the override of some methods
 
 @Getter

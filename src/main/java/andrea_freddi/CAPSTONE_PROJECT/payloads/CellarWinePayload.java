@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-/**
+/*
  * This class is used to receive the data from the client when adding a wine to the cellar.
  * It contains all the fields that are needed to create a new CellarWine entity.
  * The validation annotations are used to validate the data received from the client.

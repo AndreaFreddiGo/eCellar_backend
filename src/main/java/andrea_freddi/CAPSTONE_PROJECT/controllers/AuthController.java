@@ -15,7 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
-// this class is a REST controller that handles authentication-related requests
+/*
+ * This class is a Spring Boot REST controller that handles authentication-related requests
+ * It provides endpoints for user login and registration
+ * The class is annotated with @RestController, which indicates that it is a controller
+ * and that the return values of its methods will be serialized to JSON and sent in the HTTP response
+ */
 
 @RestController
 @RequestMapping("/auth") // this is the base URL for all endpoints in this controller
@@ -36,7 +41,7 @@ public class AuthController {
 
     // this method handles the registration request
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED) // this status code indicates that a new resource has been created
+    @ResponseStatus(HttpStatus.CREATED) // this status code indicates that a new resource has been created: 201
     public User save(@RequestBody @Validated UserPayload body, BindingResult validationResult) {
         // It receives a UserPayload object containing the user's details
         // and validates it using the @Validated annotation

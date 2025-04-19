@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 
 import java.util.List;
 
-/**
+/*
  * This class is used to receive the wine data from the client
  * It contains all the fields that are required to create a new wine
  * The validation annotations are used to validate the input data

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
+/*
  * This class is used to receive the login data from the client
  * It contains the fields that are required for login
  * The fields are validated using Jakarta Bean Validation annotations

@@ -3,7 +3,7 @@ package andrea_freddi.CAPSTONE_PROJECT.payloads;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
+/*
  * AddressPayload is a record that represents the payload for an address.
  * It contains fields for label, address line, city, province, postal code, and country.
  * Each field has validation constraints to ensure the data is valid.

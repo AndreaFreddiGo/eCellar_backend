@@ -1,7 +1,5 @@
 package andrea_freddi.CAPSTONE_PROJECT.tools;
 
-// creo la classe JWT per gestire la creazione e la validazione dei token JWT
-
 import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.exception.UnauthorizedException;
 import io.jsonwebtoken.Jwts;
