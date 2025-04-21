@@ -36,8 +36,9 @@ public class Cellar {
     @OneToMany(mappedBy = "cellar", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CellarWine> cellarWines;
 
-    public Cellar(String name, User user) {
+    public Cellar(String name, String description, User user) {
         this.name = name;
+        this.description = description;
         this.user = user;
     }
 
