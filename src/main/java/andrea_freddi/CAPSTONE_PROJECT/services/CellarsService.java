@@ -5,6 +5,7 @@ import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.CellarPayload;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.CellarsRepository;
+import andrea_freddi.CAPSTONE_PROJECT.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,10 @@ public class CellarsService {
     @Autowired
     private CellarsRepository cellarsRepository;
 
+    // The SecurityUtils is injected into this service to handle security-related operations
+    @Autowired
+    private SecurityUtils securityUtils;
+
     // This method finds a cellar by its ID
     public Cellar findById(UUID cellarId) {
         return this.cellarsRepository.findById(cellarId).orElseThrow(
@@ -36,9 +41,7 @@ public class CellarsService {
     public Cellar findByIdAndUser(UUID cellarId, User user) {
         Cellar found = this.findById(cellarId);
         // Check if the cellar belongs to the user or if the user is an admin
-        if (!user.isOwnerOf(found) && !user.isAdmin()) {
-            throw new BadRequestException("You are not authorized to access this cellar!");
-        }
+        securityUtils.checkOwnershipOrAdmin(user, found.getUser().getId());
         return found;
     }
 
@@ -48,9 +51,7 @@ public class CellarsService {
                 () -> new BadRequestException("Cellar with name '" + name + "' not found!")
         );
         // Check if the cellar belongs to the user or if the user is an admin
-        if (!user.isOwnerOf(found) && !user.isAdmin()) {
-            throw new BadRequestException("You are not authorized to access this cellar!");
-        }
+        securityUtils.checkOwnershipOrAdmin(user, found.getUser().getId());
         return found;
     }
 
@@ -83,9 +84,7 @@ public class CellarsService {
     public Cellar findByIdAndUserAndUpdate(UUID cellarId, CellarPayload body, User user) {
         // Find the cellar and check ownership or admin status
         Cellar found = this.findById(cellarId);
-        if (!user.isOwnerOf(found) && !user.isAdmin()) {
-            throw new BadRequestException("You are not authorized to update this cellar!");
-        }
+        securityUtils.checkOwnershipOrAdmin(user, found.getUser().getId());
         // Check if another cellar with the same name already exists for the user
         this.cellarsRepository.findByNameAndUser(body.name(), user).ifPresent(existing -> {
             if (!existing.getId().equals(cellarId)) {
@@ -102,9 +101,7 @@ public class CellarsService {
     public void findByIdAndUserAndDelete(UUID cellarId, User user) {
         // Find the cellar and check ownership or admin status
         Cellar found = this.findById(cellarId);
-        if (!user.isOwnerOf(found) && !user.isAdmin()) {
-            throw new BadRequestException("You are not authorized to delete this cellar!");
-        }
+        securityUtils.checkOwnershipOrAdmin(user, found.getUser().getId());
         // Delete the cellar
         this.cellarsRepository.delete(found);
     }

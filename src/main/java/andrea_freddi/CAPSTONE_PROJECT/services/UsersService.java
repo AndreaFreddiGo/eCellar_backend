@@ -6,6 +6,7 @@ import andrea_freddi.CAPSTONE_PROJECT.payloads.PasswordUpdatePayload;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.UserPayload;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.UserUpdatePayload;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.UsersRepository;
+import andrea_freddi.CAPSTONE_PROJECT.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,10 @@ public class UsersService {
     // The PasswordEncoder is injected into this service to handle password encryption
     @Autowired
     private PasswordEncoder bcrypt;
+
+    // The SecurityUtils is injected into this service to handle security-related operations
+    @Autowired
+    private SecurityUtils securityUtils;
 
     // This method finds a user by their id
     public User findById(UUID userId) {

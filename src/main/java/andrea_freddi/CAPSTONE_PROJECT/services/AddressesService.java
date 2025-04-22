@@ -5,6 +5,7 @@ import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.AddressPayload;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.AddressesRepository;
+import andrea_freddi.CAPSTONE_PROJECT.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,10 @@ public class AddressesService {
     @Autowired
     private AddressesRepository addressesRepository;
 
+    // The SecurityUtils is injected into this service to handle security-related operations
+    @Autowired
+    private SecurityUtils securityUtils;
+
     // This method finds an address by its ID
     public Address findById(UUID addressId) {
         return this.addressesRepository.findById(addressId).orElseThrow(
@@ -37,9 +42,7 @@ public class AddressesService {
     public Address findByIdAndUser(UUID addressId, User user) {
         Address found = this.findById(addressId);
         // Check if the address belongs to the user or if the user is an admin
-        if (!user.isOwnerOf(found) && !user.isAdmin()) {
-            throw new BadRequestException("You are not authorized to access this address!");
-        }
+        securityUtils.checkOwnershipOrAdmin(user, found.getUser().getId());
         return found;
     }
 
@@ -49,9 +52,7 @@ public class AddressesService {
                 () -> new BadRequestException("Address with label '" + label + "' not found!")
         );
         // Check if the address belongs to the user or if the user is an admin
-        if (!user.isOwnerOf(found) && !user.isAdmin()) {
-            throw new BadRequestException("You are not authorized to access this address!");
-        }
+        securityUtils.checkOwnershipOrAdmin(user, found.getUser().getId());
         return found;
     }
 
@@ -97,9 +98,7 @@ public class AddressesService {
         }
         // Check if another cellar with the same label already exists for the user
         this.addressesRepository.findByLabelAndUser(body.label(), user).ifPresent(existing -> {
-            if (!existing.getId().equals(addressId)) {
-                throw new BadRequestException("You already have an address with label: + " + body.label());
-            }
+            securityUtils.checkOwnershipOrAdmin(user, found.getUser().getId());
         });
         // Apply the updates
         found.setLabel(body.label());
@@ -115,9 +114,7 @@ public class AddressesService {
     public void findByIdAndUserAndDelete(UUID addressId, User user) {
         // Find the cellar and check ownership or admin status
         Address found = this.findById(addressId);
-        if (!user.isOwnerOf(found) && !user.isAdmin()) {
-            throw new BadRequestException("You are not authorized to delete this address!");
-        }
+        securityUtils.checkOwnershipOrAdmin(user, found.getUser().getId());
         // Delete the cellar
         this.addressesRepository.delete(found);
     }
