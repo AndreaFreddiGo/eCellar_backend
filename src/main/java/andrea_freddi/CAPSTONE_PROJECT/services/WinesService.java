@@ -1,11 +1,13 @@
 package andrea_freddi.CAPSTONE_PROJECT.services;
 
+import andrea_freddi.CAPSTONE_PROJECT.elasticsearch.WineDocument;
 import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.entities.Wine;
 import andrea_freddi.CAPSTONE_PROJECT.entities.WineStatus;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.WinePayload;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.WinesRepository;
+import andrea_freddi.CAPSTONE_PROJECT.repositories.WinesSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,10 @@ public class WinesService {
     // This field is used to access the WinesRepository, which interacts with the database
     @Autowired
     private WinesRepository winesRepository;
+
+    // This field is used to access the WinesSearchRepository, which provides search functionality
+    @Autowired
+    private WinesSearchRepository winesSearchRepository;
 
     // This method finds a wine by its ID
     public Wine findById(UUID wineId) {
@@ -71,14 +77,39 @@ public class WinesService {
                 }
         );
         Wine newWine = new Wine(body.name(), body.producer(), body.country(), body.color(), body.grapeVarieties());
-        // Set status based on a role
+
+        // Set additional fields
+        newWine.setVintage(body.vintage());
+        newWine.setAbv(body.abv());
+        newWine.setAppellation(body.appellation());
+        newWine.setRegion(body.region());
+        newWine.setSweetness(body.sweetness());
+        newWine.setEffervescence(body.effervescence());
+        newWine.setCategory(body.category());
+        newWine.setDescription(body.description());
+        newWine.setImageUrl(body.imageUrl());
+        newWine.setBeginConsumeYear(body.beginConsumeYear());
+        newWine.setEndConsumeYear(body.endConsumeYear());
+        newWine.setDrinkability(body.drinkability());
+        newWine.setBarcode(body.barcode());
+
+        // Assign creator
+        newWine.setCreatedBy(user);
+
+        // Set status based on a user role
         if (user.isAdmin() && body.status() != null) {
             newWine.setStatus(body.status());
         } else {
             newWine.setStatus(WineStatus.USER_SUBMITTED);
         }
 
-        return this.winesRepository.save(newWine);
+        // Save the wine in the relational database
+        Wine savedWine = this.winesRepository.save(newWine);
+
+        // Save in Elasticsearch
+        winesSearchRepository.save(WineDocument.fromEntity(savedWine));
+
+        return savedWine;
     }
 
     // This method updates an existing wine
