@@ -1,7 +1,141 @@
 package andrea_freddi.CAPSTONE_PROJECT.services;
 
+import andrea_freddi.CAPSTONE_PROJECT.entities.User;
+import andrea_freddi.CAPSTONE_PROJECT.entities.Wine;
+import andrea_freddi.CAPSTONE_PROJECT.entities.WineStatus;
+import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
+import andrea_freddi.CAPSTONE_PROJECT.payloads.WinePayload;
+import andrea_freddi.CAPSTONE_PROJECT.repositories.WinesRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+// This class is a service that handles the business logic for the Wines entity
+// It is annotated with @Service, indicating that it is a Spring service component
 
 @Service
 public class WinesService {
+
+    // This field is used to access the WinesRepository, which interacts with the database
+    @Autowired
+    private WinesRepository winesRepository;
+
+    // This method finds a wine by its ID
+    public Wine findById(UUID wineId) {
+        return this.winesRepository.findById(wineId).orElseThrow(
+                () -> new BadRequestException("Wine with id " + wineId + " not found!")
+        );
+    }
+
+    // This method finds all wines with pagination and sorting
+    public Page<Wine> findAll(int page, int size, String sortBy) {
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.winesRepository.findAll(pageable);
+    }
+
+    // This method finds all wines by status with pagination and sorting
+    public Page<Wine> findAllByStatus(WineStatus status, int page, int size, String sortBy) {
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.winesRepository.findAllByStatus(status, pageable);
+    }
+
+    // This method finds all wines visible to a user with pagination and sorting
+    public Page<Wine> findVisibleWinesForUser(User user, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return winesRepository.findVisibleToUser(
+                WineStatus.VERIFIED,
+                user,
+                List.of(WineStatus.USER_SUBMITTED, WineStatus.PENDING_REVIEW),
+                pageable
+        );
+    }
+
+    // This method saves a new wine
+    public Wine save(WinePayload body, User user) {
+        // Check if the wine already exists (case-insensitive)
+        this.winesRepository.findByNameAndProducerAndVintage(
+                body.name().trim().toLowerCase(),
+                body.producer().trim().toLowerCase(),
+                body.vintage()
+        ).ifPresent(
+                wine -> {
+                    throw new BadRequestException("Wine " + body.name() + " already exists!");
+                }
+        );
+        Wine newWine = new Wine(body.name(), body.producer(), body.country(), body.color(), body.grapeVarieties());
+        // Set status based on a role
+        if (user.isAdmin() && body.status() != null) {
+            newWine.setStatus(body.status());
+        } else {
+            newWine.setStatus(WineStatus.USER_SUBMITTED);
+        }
+
+        return this.winesRepository.save(newWine);
+    }
+
+    // This method updates an existing wine
+    public Wine findByIdAndUpdate(UUID wineId, WinePayload body, User user) {
+        Wine found = this.findById(wineId);
+        // Check if the wine already exists (case-insensitive)
+        this.winesRepository.findByNameAndProducerAndVintage(
+                body.name().trim().toLowerCase(),
+                body.producer().trim().toLowerCase(),
+                body.vintage()
+        ).ifPresent(
+                wine -> {
+                    if (!wine.getId().equals(found.getId())) {
+                        throw new BadRequestException("Wine " + body.name() + " already exists!");
+                    }
+                }
+        );
+        // If the user is not admin, only allow editing their own USER_SUBMITTED wines
+        if (!user.isAdmin()) {
+            if (!user.getId().equals(found.getCreatedBy().getId())) {
+                throw new BadRequestException("You are not authorized to update this wine.");
+            }
+            if (found.getStatus() != WineStatus.USER_SUBMITTED) {
+                throw new BadRequestException("You can no longer modify this wine.");
+            }
+        }
+        // Update the wine fields
+        found.setName(body.name());
+        found.setProducer(body.producer());
+        found.setVintage(body.vintage());
+        found.setAbv(body.abv());
+        found.setGrapeVarieties(body.grapeVarieties());
+        found.setAppellation(body.appellation());
+        found.setCountry(body.country());
+        found.setRegion(body.region());
+        found.setColor(body.color());
+        found.setSweetness(body.sweetness());
+        found.setEffervescence(body.effervescence());
+        found.setCategory(body.category());
+        found.setDescription(body.description());
+        found.setImageUrl(body.imageUrl());
+
+        // Allow admin to update status
+        if (user.isAdmin() && body.status() != null) {
+            found.setStatus(body.status());
+            // found.setVerifiedBy(user); // Uncomment if you track who verified it
+        }
+
+        return this.winesRepository.save(found);
+    }
+
+    // This method deletes a wine by its ID
+    public void findByIdAndDelete(UUID wineId, User user) {
+        Wine found = this.findById(wineId);
+        if (!user.isAdmin()) {
+            throw new BadRequestException("You are not authorized to delete this wine!");
+        }
+        this.winesRepository.delete(found);
+    }
 }

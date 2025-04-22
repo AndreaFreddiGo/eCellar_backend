@@ -5,13 +5,11 @@ import jakarta.validation.constraints.*;
 
 import java.util.List;
 
-/*
- * This class is used to receive the wine data from the client
- * It contains all the fields that are required to create a new wine
- * The validation annotations are used to validate the input data
- * The class is used in the WineController class
+/**
+ * WinePayload is used to receive wine data from the client
+ * It includes validation annotations for proper input validation
+ * Admins may also specify the wine status manually
  */
-
 public record WinePayload(
 
         @NotBlank(message = "Wine name cannot be blank")
@@ -20,9 +18,9 @@ public record WinePayload(
         @NotBlank(message = "Producer cannot be blank")
         String producer,
 
-        @Min(value = 1900, message = "Year must be realistic")
-        @Max(value = 2100, message = "Year must be realistic")
-        Integer year,
+        @Min(value = 1900, message = "Vintage must be realistic")
+        @Max(value = 2100, message = "Vintage must be realistic")
+        Integer vintage,
 
         @DecimalMin(value = "0.0", inclusive = false, message = "ABV must be positive")
         @DecimalMax(value = "25.0", message = "ABV must be realistic")
@@ -64,7 +62,8 @@ public record WinePayload(
         Drinkability drinkability,
 
         @Size(max = 50, message = "Barcode must be shorter")
-        String barcode
+        String barcode,
 
+        WineStatus status // Optional field, only admins may use this
 ) {
 }

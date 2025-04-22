@@ -16,7 +16,9 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "wines")
+@Table(name = "wines",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"name", "producer", "vintage"}))
+// unique constraint on name, producer and vintage
 public class Wine {
     @Id
     @Setter(AccessLevel.NONE) // I don't want it to be set from the outside
@@ -63,17 +65,24 @@ public class Wine {
     @Column(name = "wine_status", nullable = false)
     private WineStatus status;
 
+    @ManyToOne
+    @JoinColumn(name = "created_by_id", nullable = false)
+    private User createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "verified_by_id")
+    private User verifiedBy;
+
 
     @OneToMany(mappedBy = "wine")
     private List<CellarWine> cellarWines;
 
-    public Wine(String name, String producer, String country, WineColor color, List<String> grapeVarieties, WineStatus status) {
+    public Wine(String name, String producer, String country, WineColor color, List<String> grapeVarieties) {
         this.name = name;
         this.producer = producer;
         this.country = country;
         this.color = color;
         this.grapeVarieties = grapeVarieties;
-        this.status = WineStatus.USER_SUBMITTED;
     }
 
     @Override
