@@ -33,6 +33,28 @@ public class AddressesService {
         );
     }
 
+    // This method finds an address by its ID and user
+    public Address findByIdAndUser(UUID addressId, User user) {
+        Address found = this.findById(addressId);
+        // Check if the address belongs to the user or if the user is an admin
+        if (!user.isOwnerOf(found) && !user.isAdmin()) {
+            throw new BadRequestException("You are not authorized to access this address!");
+        }
+        return found;
+    }
+
+    // This method finds an address by its label and user
+    public Address findByLabelAndUser(String label, User user) {
+        Address found = this.addressesRepository.findByLabelAndUser(label, user).orElseThrow(
+                () -> new BadRequestException("Address with label '" + label + "' not found!")
+        );
+        // Check if the address belongs to the user or if the user is an admin
+        if (!user.isOwnerOf(found) && !user.isAdmin()) {
+            throw new BadRequestException("You are not authorized to access this address!");
+        }
+        return found;
+    }
+
     // This method finds all addresses with pagination and sorting
     public Page<Address> findAll(int page, int size, String sortBy) {
         if (size > 20) size = 20;
@@ -40,7 +62,7 @@ public class AddressesService {
         return this.addressesRepository.findAll(pageable);
     }
 
-    // This method finds all addresses by user ID
+    // This method finds all addresses by user
     public List<Address> findAllByUser(User user) {
         return this.addressesRepository.findAllByUser(user);
     }
@@ -67,10 +89,10 @@ public class AddressesService {
     }
 
     // This method updates an existing address by its ID
-    public Address findByIdAndUpdate(UUID addressId, AddressPayload body, User user) {
-        // Find the address and check ownership
+    public Address findByIdAndUserAndUpdate(UUID addressId, AddressPayload body, User user) {
+        // Find the address and check ownership or admin status
         Address found = this.findById(addressId);
-        if (!found.getUser().getId().equals(user.getId())) {
+        if (!user.isOwnerOf(found) && !user.isAdmin()) {
             throw new BadRequestException("You are not authorized to update this address!");
         }
         // Check if another cellar with the same label already exists for the user
@@ -88,13 +110,13 @@ public class AddressesService {
         found.setCountry(body.country());
         return this.addressesRepository.save(found);
     }
-    
+
     // This method deletes a cellar by its ID
-    public void findByIdAndDelete(UUID cellarId, User user) {
-        // Find the cellar and check ownership
-        Address found = this.findById(cellarId);
-        if (!found.getUser().getId().equals(user.getId())) {
-            throw new BadRequestException("You are not authorized to delete this cellar!");
+    public void findByIdAndUserAndDelete(UUID addressId, User user) {
+        // Find the cellar and check ownership or admin status
+        Address found = this.findById(addressId);
+        if (!user.isOwnerOf(found) && !user.isAdmin()) {
+            throw new BadRequestException("You are not authorized to delete this address!");
         }
         // Delete the cellar
         this.addressesRepository.delete(found);

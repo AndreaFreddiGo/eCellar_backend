@@ -32,6 +32,28 @@ public class CellarsService {
         );
     }
 
+    // This method finds a cellar by its ID and user
+    public Cellar findByIdAndUser(UUID cellarId, User user) {
+        Cellar found = this.findById(cellarId);
+        // Check if the cellar belongs to the user or if the user is an admin
+        if (!user.isOwnerOf(found) && !user.isAdmin()) {
+            throw new BadRequestException("You are not authorized to access this cellar!");
+        }
+        return found;
+    }
+
+    // This method finds a cellar by its name and user
+    public Cellar findByNameAndUser(String name, User user) {
+        Cellar found = this.cellarsRepository.findByNameAndUser(name, user).orElseThrow(
+                () -> new BadRequestException("Cellar with name '" + name + "' not found!")
+        );
+        // Check if the cellar belongs to the user or if the user is an admin
+        if (!user.isOwnerOf(found) && !user.isAdmin()) {
+            throw new BadRequestException("You are not authorized to access this cellar!");
+        }
+        return found;
+    }
+
     // This method finds all cellars with pagination and sorting
     public Page<Cellar> findAll(int page, int size, String sortBy) {
         if (size > 20) size = 20;
@@ -39,7 +61,7 @@ public class CellarsService {
         return this.cellarsRepository.findAll(pageable);
     }
 
-    // This method finds all cellars by user ID
+    // This method finds all cellars by user
     public List<Cellar> findAllByUserId(User user) {
         return this.cellarsRepository.findAllByUser(user);
     }
@@ -58,10 +80,10 @@ public class CellarsService {
     }
 
     // This method updates an existing cellar by its ID
-    public Cellar findByIdAndUpdate(UUID cellarId, CellarPayload body, User user) {
-        // Find the cellar and check ownership
+    public Cellar findByIdAndUserAndUpdate(UUID cellarId, CellarPayload body, User user) {
+        // Find the cellar and check ownership or admin status
         Cellar found = this.findById(cellarId);
-        if (!found.getUser().getId().equals(user.getId())) {
+        if (!user.isOwnerOf(found) && !user.isAdmin()) {
             throw new BadRequestException("You are not authorized to update this cellar!");
         }
         // Check if another cellar with the same name already exists for the user
@@ -76,12 +98,11 @@ public class CellarsService {
         return this.cellarsRepository.save(found);
     }
 
-
     // This method deletes a cellar by its ID
-    public void findByIdAndDelete(UUID cellarId, User user) {
-        // Find the cellar and check ownership
+    public void findByIdAndUserAndDelete(UUID cellarId, User user) {
+        // Find the cellar and check ownership or admin status
         Cellar found = this.findById(cellarId);
-        if (!found.getUser().getId().equals(user.getId())) {
+        if (!user.isOwnerOf(found) && !user.isAdmin()) {
             throw new BadRequestException("You are not authorized to delete this cellar!");
         }
         // Delete the cellar

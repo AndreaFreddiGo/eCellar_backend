@@ -49,7 +49,7 @@ public class AuthController {
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(". "));
-            throw new BadRequestException("Ci sono stati errori nel payload! " + message);
+            throw new BadRequestException("There were errors in the payload! " + message);
         }
         return this.usersService.save(body);
     }

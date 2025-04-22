@@ -16,4 +16,8 @@ public interface AddressesRepository extends JpaRepository<Address, UUID> {
 
     // This method retrieves an address by its label and the user it belongs to
     Optional<Address> findByLabelAndUser(String label, User user);
+
+    // This method is used to find an address by its ID and the user it belongs to
+    Optional<Address> findByIdAndUser(UUID id, User user);
+
 }

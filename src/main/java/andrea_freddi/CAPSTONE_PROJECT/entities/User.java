@@ -124,4 +124,22 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true; // I don't want to disable the account
     }
+
+    // These methods are used to check if the user is an admin or the owner of a Cellar, Address or CellarWine
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
+    }
+
+    public boolean isOwnerOf(Cellar cellar) {
+        return cellar.getUser().getId().equals(this.getId());
+    }
+
+    public boolean isOwnerOf(Address address) {
+        return address.getUser().getId().equals(this.getId());
+    }
+
+    public boolean isOwnerOf(CellarWine cellarWine) {
+        return cellarWine.getUser().getId().equals(this.getId());
+    }
+
 }

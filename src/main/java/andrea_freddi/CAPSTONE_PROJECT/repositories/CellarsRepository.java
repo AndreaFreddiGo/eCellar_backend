@@ -17,4 +17,7 @@ public interface CellarsRepository extends JpaRepository<Cellar, UUID> {
     // This method is used to find a cellar by its name and user
     Optional<Cellar> findByNameAndUser(String name, User user);
 
+    // This method is used to find a cellar by its id and user
+    Optional<Cellar> findByIdAndUser(UUID id, User user);
+
 }
