@@ -59,16 +59,21 @@ public class Wine {
     private Float professionalScore;
     @Column(name = "community_score")
     private Float communityScore;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "wine_status", nullable = false)
+    private WineStatus status;
+
 
     @OneToMany(mappedBy = "wine")
     private List<CellarWine> cellarWines;
 
-    public Wine(String name, String producer, String country, WineColor color, List<String> grapeVarieties) {
+    public Wine(String name, String producer, String country, WineColor color, List<String> grapeVarieties, WineStatus status) {
         this.name = name;
         this.producer = producer;
         this.country = country;
         this.color = color;
         this.grapeVarieties = grapeVarieties;
+        this.status = WineStatus.USER_SUBMITTED;
     }
 
     @Override
@@ -89,6 +94,7 @@ public class Wine {
                 ", category=" + category +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", status=" + status +
                 '}';
     }
 }
