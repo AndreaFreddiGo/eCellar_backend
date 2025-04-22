@@ -6,6 +6,10 @@ import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.AddressPayload;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.AddressesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +22,7 @@ import java.util.UUID;
 @Service
 public class AddressesService {
 
-    // Injecting the AddressesRepository to access the database
+    // This field is used to access the AddressesRepository, which is used to interact with the database
     @Autowired
     private AddressesRepository addressesRepository;
 
@@ -29,50 +33,70 @@ public class AddressesService {
         );
     }
 
-    // This method retrieves all addresses belonging to a specific user
-    public List<Address> findAllByUser(User user) {
-        return this.addressesRepository.findByUser(user);
+    // This method finds all addresses with pagination and sorting
+    public Page<Address> findAll(int page, int size, String sortBy) {
+        if (size > 20) size = 20;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.addressesRepository.findAll(pageable);
     }
 
-    // This method saves a new address for a user
-    public Address save(AddressPayload payload, User user) {
-        // Check if the address already exists for the user
-        this.addressesRepository.findByLabelAndUser(payload.label(), user).ifPresent(
+    // This method finds all addresses by user ID
+    public List<Address> findAllByUser(User user) {
+        return this.addressesRepository.findAllByUser(user);
+    }
+
+    // This method saves a new address
+    public Address save(AddressPayload body, User user) {
+        // Check if the address name already exists for the user
+        this.addressesRepository.findByLabelAndUser(body.label(), user).ifPresent(
                 address -> {
-                    throw new BadRequestException("Address with label " + payload.label() + " already exists!");
+                    throw new BadRequestException("Address with label " + body.label() + " already exists!");
                 }
         );
-        // If not, create a new address
-        Address newAddress = new Address(payload.label(), payload.addressLine(), payload.city(),
-                payload.province(), payload.postalCode(), payload.country(), user);
-        // Save the new address to the database
+        // If it doesn't exist, create a new address and save it
+        Address newAddress = new Address(
+                body.label(),
+                body.addressLine(),
+                body.city(),
+                body.province(),
+                body.postalCode(),
+                body.country(),
+                user
+        );
         return this.addressesRepository.save(newAddress);
     }
 
-    // This method updates an existing address if it belongs to the authenticated user
-    public Address findByIdAndUpdate(UUID addressId, AddressPayload payload, User user) {
-        // Find the address by ID
+    // This method updates an existing address by its ID
+    public Address findByIdAndUpdate(UUID addressId, AddressPayload body, User user) {
+        // Find the address and check ownership
         Address found = this.findById(addressId);
-        // Check 
-
-        found.setLabel(payload.label());
-        found.setAddressLine(payload.addressLine());
-        found.setCity(payload.city());
-        found.setProvince(payload.province());
-        found.setPostalCode(payload.postalCode());
-        found.setCountry(payload.country());
-
+        if (!found.getUser().getId().equals(user.getId())) {
+            throw new BadRequestException("You are not authorized to update this address!");
+        }
+        // Check if another cellar with the same label already exists for the user
+        this.addressesRepository.findByLabelAndUser(body.label(), user).ifPresent(existing -> {
+            if (!existing.getId().equals(addressId)) {
+                throw new BadRequestException("You already have an address with label: + " + body.label());
+            }
+        });
+        // Apply the updates
+        found.setLabel(body.label());
+        found.setAddressLine(body.addressLine());
+        found.setCity(body.city());
+        found.setProvince(body.province());
+        found.setPostalCode(body.postalCode());
+        found.setCountry(body.country());
         return this.addressesRepository.save(found);
     }
-
-    // This method deletes an address if it belongs to the authenticated user
-    public void findByIdAndDelete(UUID id, User user) {
-        Address found = this.findById(id);
-
+    
+    // This method deletes a cellar by its ID
+    public void findByIdAndDelete(UUID cellarId, User user) {
+        // Find the cellar and check ownership
+        Address found = this.findById(cellarId);
         if (!found.getUser().getId().equals(user.getId())) {
-            throw new BadRequestException("You are not authorized to delete this address");
+            throw new BadRequestException("You are not authorized to delete this cellar!");
         }
-
+        // Delete the cellar
         this.addressesRepository.delete(found);
     }
 }

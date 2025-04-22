@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface AddressesRepository extends JpaRepository<Address, UUID> {
     // This method retrieves a list of addresses associated with a specific user
-    List<Address> findByUser(User user);
+    List<Address> findAllByUser(User user);
 
     // This method retrieves an address by its label and the user it belongs to
     Optional<Address> findByLabelAndUser(String label, User user);
