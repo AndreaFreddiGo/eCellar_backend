@@ -4,6 +4,7 @@ import andrea_freddi.CAPSTONE_PROJECT.elasticsearch.WineDocument;
 import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.entities.Wine;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
+import andrea_freddi.CAPSTONE_PROJECT.payloads.WineDTO;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.WinePayload;
 import andrea_freddi.CAPSTONE_PROJECT.services.WinesSearchService;
 import andrea_freddi.CAPSTONE_PROJECT.services.WinesService;
@@ -62,7 +63,7 @@ public class WinesController {
     // this method is used to create a new wine in the database
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // this status code indicates that a new resource has been created: 201
-    public Wine save(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestBody @Validated WinePayload body, BindingResult validationResult) {
+    public WineDTO save(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestBody @Validated WinePayload body, BindingResult validationResult) {
         // It receives a WinePayload object containing the wine data and validates it using the @Validated annotation
         // If there are validation errors, it throws a BadRequestException with the error messages
         if (validationResult.hasErrors()) {

@@ -5,6 +5,7 @@ import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.entities.Wine;
 import andrea_freddi.CAPSTONE_PROJECT.entities.WineStatus;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
+import andrea_freddi.CAPSTONE_PROJECT.payloads.WineDTO;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.WinePayload;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.WinesRepository;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.WinesSearchRepository;
@@ -65,7 +66,7 @@ public class WinesService {
     }
 
     // This method saves a new wine
-    public Wine save(WinePayload body, User user) {
+    public WineDTO save(WinePayload body, User user) {
         // Check if the wine already exists (case-insensitive)
         this.winesRepository.findByNameAndProducerAndVintage(
                 body.name().trim().toLowerCase(),
@@ -96,7 +97,7 @@ public class WinesService {
         // Assign creator
         newWine.setCreatedBy(user);
 
-// Set status based on user role
+// Set status based on a user role
         if (user.isAdmin()) {
             newWine.setStatus(WineStatus.VERIFIED);
         } else {
@@ -109,7 +110,30 @@ public class WinesService {
         // Save in Elasticsearch
         winesSearchRepository.save(WineDocument.fromEntity(savedWine));
 
-        return savedWine;
+        return new WineDTO(
+                savedWine.getId(),
+                savedWine.getName(),
+                savedWine.getProducer(),
+                savedWine.getVintage(),
+                savedWine.getAbv(),
+                savedWine.getGrapeVarieties(),
+                savedWine.getAppellation(),
+                savedWine.getCountry(),
+                savedWine.getRegion(),
+                savedWine.getColor(),
+                savedWine.getSweetness(),
+                savedWine.getEffervescence(),
+                savedWine.getCategory(),
+                savedWine.getDescription(),
+                savedWine.getImageUrl(),
+                savedWine.getBeginConsumeYear(),
+                savedWine.getEndConsumeYear(),
+                savedWine.getDrinkability(),
+                savedWine.getBarcode(),
+                savedWine.getProfessionalScore(),
+                savedWine.getCommunityScore(),
+                savedWine.getStatus()
+        );
     }
 
     // This method updates an existing wine

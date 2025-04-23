@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +17,10 @@ import java.util.UUID;
 public class WineDocument {
     @Id
     private UUID id;
+    @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "standard"),
+            otherFields = {
+                    @InnerField(suffix = "keyword", type = FieldType.Keyword)
+            })
     private String name;
     private String producer;
     private Integer vintage;
