@@ -19,9 +19,6 @@ public interface WinesRepository extends JpaRepository<Wine, UUID> {
     // this method is used to find all wines by status
     Page<Wine> findAllByStatus(WineStatus status, Pageable pageable);
 
-    // this method is used to find all wines by status and user submitted
-    Page<Wine> findAllByStatusAndUserSubmitted(WineStatus status, UUID userId, Pageable pageable);
-
     // this method is used to find a wine by name, producer and vintage (case-insensitive)
     @Query("SELECT w FROM Wine w WHERE LOWER(w.name) = LOWER(:name) AND LOWER(w.producer) = LOWER(:producer) AND w.vintage = :vintage")
     Optional<Wine> findByNameAndProducerAndVintage(@Param("name") String name, @Param("producer") String producer, @Param("vintage") Integer vintage);

@@ -102,7 +102,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.getUsername(); // this method is used by Spring Security to get the username
+        return this.username; // this method is used by Spring Security to get the username
     }
 
     @Override

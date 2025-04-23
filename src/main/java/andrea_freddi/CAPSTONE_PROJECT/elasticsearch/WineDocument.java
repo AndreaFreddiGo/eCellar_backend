@@ -1,9 +1,6 @@
 package andrea_freddi.CAPSTONE_PROJECT.elasticsearch;
 
 import andrea_freddi.CAPSTONE_PROJECT.entities.Wine;
-import andrea_freddi.CAPSTONE_PROJECT.entities.WineCategory;
-import andrea_freddi.CAPSTONE_PROJECT.entities.WineColor;
-import andrea_freddi.CAPSTONE_PROJECT.entities.WineEffervescence;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,9 +24,6 @@ public class WineDocument {
     private String appellation;
     private String country;
     private String region;
-    private WineColor color;
-    private WineEffervescence effervescence;
-    private WineCategory category;
 
     public WineDocument(Wine wine) {
         this.id = wine.getId();
@@ -40,9 +34,6 @@ public class WineDocument {
         this.appellation = wine.getAppellation();
         this.country = wine.getCountry();
         this.region = wine.getRegion();
-        this.color = wine.getColor();
-        this.effervescence = wine.getEffervescence();
-        this.category = wine.getCategory();
     }
 
     public static WineDocument fromEntity(Wine wine) {
@@ -60,9 +51,6 @@ public class WineDocument {
                 ", appellation='" + appellation + '\'' +
                 ", country='" + country + '\'' +
                 ", region='" + region + '\'' +
-                ", color=" + color +
-                ", effervescence=" + effervescence +
-                ", category=" + category +
                 '}';
     }
 }

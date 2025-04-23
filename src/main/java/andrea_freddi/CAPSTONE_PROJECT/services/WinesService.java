@@ -96,9 +96,9 @@ public class WinesService {
         // Assign creator
         newWine.setCreatedBy(user);
 
-        // Set status based on a user role
-        if (user.isAdmin() && body.status() != null) {
-            newWine.setStatus(body.status());
+// Set status based on user role
+        if (user.isAdmin()) {
+            newWine.setStatus(WineStatus.VERIFIED);
         } else {
             newWine.setStatus(WineStatus.USER_SUBMITTED);
         }

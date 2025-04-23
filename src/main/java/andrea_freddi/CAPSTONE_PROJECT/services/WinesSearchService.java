@@ -24,7 +24,7 @@ public class WinesSearchService {
         Query elasticQuery = Query.of(q -> q
                 .multiMatch(MultiMatchQuery.of(m -> m
                         .query(text)
-                        .fields("name^2", "producer", "vintage", "grapeVarieties", "appellation", "country", "region", "color", "effervescence", "category")
+                        .fields("name^2", "producer", "vintage", "grapeVarieties", "appellation", "country", "region")
                         .fuzziness("AUTO")
                         .type(co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType.BoolPrefix)
                 ))
