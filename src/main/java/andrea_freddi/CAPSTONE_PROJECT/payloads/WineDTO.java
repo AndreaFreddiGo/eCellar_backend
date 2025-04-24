@@ -33,6 +33,8 @@ public record WineDTO(
         String barcode,
         Float professionalScore,
         Float communityScore,
-        WineStatus status
+        WineStatus status,
+        UUID createdBy,
+        UUID verifiedBy
 ) {
 }

@@ -33,18 +33,29 @@ public class WinesService {
     @Autowired
     private WinesSearchRepository winesSearchRepository;
 
-    // This method finds a wine by its ID
-    public Wine findById(UUID wineId) {
-        return this.winesRepository.findById(wineId).orElseThrow(
+    // This method finds a wine by its ID (if user is admin the wine is searched in the database, otherwise in the search repository)
+
+    public WineDTO findByIdAndUser(UUID wineId, User user) {
+        // Check if the user is an admin
+        if (user.isAdmin()) {
+            // If the user is an admin, find the wine in the database
+            Wine found = this.winesRepository.findById(wineId).orElseThrow(
+                    () -> new BadRequestException("Wine with id " + wineId + " not found!")
+            );
+        }
+        // If the user is not an admin, find the wine in the search repository
+        WineDocument wineDocument = this.winesSearchRepository.findById(wineId).orElseThrow(
                 () -> new BadRequestException("Wine with id " + wineId + " not found!")
         );
+        // Convert the WineDocument to a Wine entity
+        return WineDTO.fromDocument(wineDocument);
     }
 
     // This method finds all wines with pagination and sorting
-    public Page<Wine> findAll(int page, int size, String sortBy) {
+    public Page<WineDTO> findAll(int page, int size, String sortBy) {
         if (size > 50) size = 50;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return this.winesRepository.findAll(pageable);
+        return this.winesRepository.findAll(pageable).map(WineDTO::fromEntity);
     }
 
     // This method finds all wines by status with pagination and sorting
@@ -132,7 +143,9 @@ public class WinesService {
                 savedWine.getBarcode(),
                 savedWine.getProfessionalScore(),
                 savedWine.getCommunityScore(),
-                savedWine.getStatus()
+                savedWine.getStatus(),
+                savedWine.getCreatedBy().getId(),
+                savedWine.getVerifiedBy().getId(),
         );
     }
 

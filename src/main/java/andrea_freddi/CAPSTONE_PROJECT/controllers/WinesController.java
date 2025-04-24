@@ -3,6 +3,7 @@ package andrea_freddi.CAPSTONE_PROJECT.controllers;
 import andrea_freddi.CAPSTONE_PROJECT.elasticsearch.WineDocument;
 import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.entities.Wine;
+import andrea_freddi.CAPSTONE_PROJECT.entities.WineStatus;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.WineDTO;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.WinePayload;
@@ -60,6 +61,15 @@ public class WinesController {
         return this.winesService.findById(wineId);
     }
 
+    // this method is used to get all wines by status from the database
+    @GetMapping("/status/{status}")
+    @PreAuthorize("hasAuthority('ADMIN')") // only users with an ADMIN role can access this endpoint
+    public Page<Wine> findAllByStatus(@PathVariable WineStatus status, @RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
+        // inserted the default values for page, size and sortBy
+        return this.winesService.findAllByStatus(status, page, size, sortBy);
+    }
+
     // this method is used to create a new wine in the database
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // this status code indicates that a new resource has been created: 201
@@ -72,5 +82,22 @@ public class WinesController {
             throw new BadRequestException("There were errors in the payload! " + message);
         }
         return this.winesService.save(body, currentAuthenticatedUser);
+    }
+
+    // all the following endpoints are used to manage wines by the current authenticated user
+    // this method is used to get all wines visible to the current authenticated user
+    @GetMapping("/me")
+    public Page<Wine> findVisibleWinesForUser(@AuthenticationPrincipal User currentAuthenticatedUser,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size,
+                                              @RequestParam(defaultValue = "id") String sortBy) {
+        // inserted the default values for page, size and sortBy
+        return this.winesService.findVisibleWinesForUser(currentAuthenticatedUser, page, size, sortBy);
+    }
+
+    // this method is used to get a wine by id from the list of wines visible to the current authenticated user
+    @GetMapping("/me/{wineId}")
+    public Wine findByIdAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID wineId) {
+        return this.winesService.findByIdAndUser(wineId, currentAuthenticatedUser);
     }
 }
