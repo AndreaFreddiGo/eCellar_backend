@@ -35,8 +35,6 @@ public interface WinesRepository extends JpaRepository<Wine, UUID> {
             @Param("userStatuses") List<WineStatus> userStatuses,
             Pageable pageable
     );
-
-    // this method is used to find a wine by id and user
-    Optional<Wine> findByIdAndUser(UUID id, User user);
+    
 }
 

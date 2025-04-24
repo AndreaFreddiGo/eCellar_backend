@@ -5,9 +5,11 @@ import andrea_freddi.CAPSTONE_PROJECT.entities.Wine;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.WineDTO;
 import andrea_freddi.CAPSTONE_PROJECT.repositories.WinesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 // This class is responsible for mapping between Wine entities and WineDTOs
 
+@Component
 public class WineMapper {
 
     @Autowired
