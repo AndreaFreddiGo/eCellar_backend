@@ -48,8 +48,8 @@ public class WinesController {
     // this method is used to get all wines from the database
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')") // only users with an ADMIN role can access this endpoint
-    public Page<Wine> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-                              @RequestParam(defaultValue = "id") String sortBy) {
+    public Page<WineDTO> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(defaultValue = "id") String sortBy) {
         // inserted the default values for page, size and sortBy
         return this.winesService.findAll(page, size, sortBy);
     }
@@ -64,8 +64,8 @@ public class WinesController {
     // this method is used to get all wines by status from the database
     @GetMapping("/status/{status}")
     @PreAuthorize("hasAuthority('ADMIN')") // only users with an ADMIN role can access this endpoint
-    public Page<Wine> findAllByStatus(@PathVariable WineStatus status, @RequestParam(defaultValue = "0") int page,
-                                      @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
+    public Page<WineDTO> findAllByStatus(@PathVariable WineStatus status, @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
         // inserted the default values for page, size and sortBy
         return this.winesService.findAllByStatus(status, page, size, sortBy);
     }
@@ -87,17 +87,17 @@ public class WinesController {
     // all the following endpoints are used to manage wines by the current authenticated user
     // this method is used to get all wines visible to the current authenticated user
     @GetMapping("/me")
-    public Page<Wine> findVisibleWinesForUser(@AuthenticationPrincipal User currentAuthenticatedUser,
-                                              @RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "10") int size,
-                                              @RequestParam(defaultValue = "id") String sortBy) {
+    public Page<WineDTO> findVisibleWinesForUser(@AuthenticationPrincipal User currentAuthenticatedUser,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size,
+                                                 @RequestParam(defaultValue = "id") String sortBy) {
         // inserted the default values for page, size and sortBy
         return this.winesService.findVisibleWinesForUser(currentAuthenticatedUser, page, size, sortBy);
     }
 
     // this method is used to get a wine by id from the list of wines visible to the current authenticated user
     @GetMapping("/me/{wineId}")
-    public Wine findByIdAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID wineId) {
+    public WineDTO findByIdAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID wineId) {
         return this.winesService.findByIdAndUser(wineId, currentAuthenticatedUser);
     }
 }
