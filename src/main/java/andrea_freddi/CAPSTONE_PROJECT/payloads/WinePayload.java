@@ -5,11 +5,12 @@ import jakarta.validation.constraints.*;
 
 import java.util.List;
 
-/**
+/*
  * WinePayload is used to receive wine data from the client
  * It includes validation annotations for proper input validation
  * Admins may also specify the wine status manually
  */
+
 public record WinePayload(
 
         @NotBlank(message = "Wine name cannot be blank")
