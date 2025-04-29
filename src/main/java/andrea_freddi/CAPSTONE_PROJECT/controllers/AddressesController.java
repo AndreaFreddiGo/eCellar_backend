@@ -3,6 +3,7 @@ package andrea_freddi.CAPSTONE_PROJECT.controllers;
 import andrea_freddi.CAPSTONE_PROJECT.entities.Address;
 import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
+import andrea_freddi.CAPSTONE_PROJECT.payloads.AddressDTO;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.AddressPayload;
 import andrea_freddi.CAPSTONE_PROJECT.services.AddressesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,8 @@ public class AddressesController {
     // this method is used to get all the addresses from the database
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')") // only users with an ADMIN role can access this endpoint
-    public Page<Address> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-                                 @RequestParam(defaultValue = "id") String sortBy) {
+    public Page<AddressDTO> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+                                    @RequestParam(defaultValue = "id") String sortBy) {
         // inserted the default values for page, size and sortBy
         return this.addressesService.findAll(page, size, sortBy);
     }
@@ -56,7 +57,7 @@ public class AddressesController {
     // this method is used to create a new address in the database
     @PostMapping("/me")
     @ResponseStatus(HttpStatus.CREATED) // this status code indicates that a new resource has been created: 201
-    public Address save(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestBody @Validated AddressPayload body, BindingResult validationResult) {
+    public AddressDTO save(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestBody @Validated AddressPayload body, BindingResult validationResult) {
         // It receives an AddressPayload object containing the address data and validates it using the @Validated annotation
         // If there are validation errors, it throws a BadRequestException with the error messages
         if (validationResult.hasErrors()) {
@@ -69,19 +70,19 @@ public class AddressesController {
 
     // this method is used to get an address by id from the database by the current authenticated user
     @GetMapping("/me/{addressId}")
-    public Address findByIdAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID addressId) {
+    public AddressDTO findByIdAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID addressId) {
         return this.addressesService.findByIdAndUser(addressId, currentAuthenticatedUser);
     }
 
     // this method is used to get an address by its label from the database by the current authenticated user
     @GetMapping("/me/label")
-    public Address findByLabelAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestParam String label) {
+    public AddressDTO findByLabelAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestParam String label) {
         return this.addressesService.findByLabelAndUser(label, currentAuthenticatedUser);
     }
 
     // this method is used to update an address in the database by the current authenticated user
     @PutMapping("/me/{addressId}")
-    public Address findByIdAndUserAndUpdate(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID addressId, @RequestBody @Validated AddressPayload body, BindingResult validationResult) {
+    public AddressDTO findByIdAndUserAndUpdate(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID addressId, @RequestBody @Validated AddressPayload body, BindingResult validationResult) {
         // It receives an AddressPayload object containing the updated address data and validates it using the @Validated annotation
         // If there are validation errors, it throws a BadRequestException with the error messages
         if (validationResult.hasErrors()) {
