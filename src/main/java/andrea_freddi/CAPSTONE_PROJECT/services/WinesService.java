@@ -35,6 +35,7 @@ public class WinesService {
     @Autowired
     private WinesSearchRepository winesSearchRepository;
 
+    // This field is used to access the WineMapper, which converts between Wine entities and WineDTOs
     @Autowired
     private WineMapper wineMapper;
 

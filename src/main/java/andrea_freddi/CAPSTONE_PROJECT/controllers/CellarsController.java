@@ -3,6 +3,7 @@ package andrea_freddi.CAPSTONE_PROJECT.controllers;
 import andrea_freddi.CAPSTONE_PROJECT.entities.Cellar;
 import andrea_freddi.CAPSTONE_PROJECT.entities.User;
 import andrea_freddi.CAPSTONE_PROJECT.exception.BadRequestException;
+import andrea_freddi.CAPSTONE_PROJECT.payloads.CellarDTO;
 import andrea_freddi.CAPSTONE_PROJECT.payloads.CellarPayload;
 import andrea_freddi.CAPSTONE_PROJECT.services.CellarsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,8 @@ public class CellarsController {
     // this method is used to get all the cellars from the database
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')") // only users with an ADMIN role can access this endpoint
-    public Page<Cellar> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-                                @RequestParam(defaultValue = "id") String sortBy) {
+    public Page<CellarDTO> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+                                   @RequestParam(defaultValue = "id") String sortBy) {
         // inserted the default values for page, size and sortBy
         return this.cellarsService.findAll(page, size, sortBy);
     }
@@ -56,7 +57,7 @@ public class CellarsController {
     // this method is used to create a new cellar in the database
     @PostMapping("/me")
     @ResponseStatus(HttpStatus.CREATED) // this status code indicates that a new resource has been created: 201
-    public Cellar save(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestBody @Validated CellarPayload body, BindingResult validationResult) {
+    public CellarDTO save(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestBody @Validated CellarPayload body, BindingResult validationResult) {
         // It receives a CellarPayload object containing the cellar data and validates it using the @Validated annotation
         // If there are validation errors, it throws a BadRequestException with the error messages
         if (validationResult.hasErrors()) {
@@ -69,19 +70,19 @@ public class CellarsController {
 
     // this method is used to get a cellar by id from the database by the current authenticated user
     @GetMapping("/me/{cellarId}")
-    public Cellar findByIdAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID cellarId) {
+    public CellarDTO findByIdAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID cellarId) {
         return this.cellarsService.findByIdAndUser(cellarId, currentAuthenticatedUser);
     }
 
     // this method is used to get a cellar by its name from the database by the current authenticated user
     @GetMapping("/me/name")
-    public Cellar findByNameAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestParam String name) {
+    public CellarDTO findByNameAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestParam String name) {
         return this.cellarsService.findByNameAndUser(name, currentAuthenticatedUser);
     }
 
     // this method is used to update a cellar in the database by the current authenticated user
     @PutMapping("/me/{cellarId}")
-    public Cellar findByIdAndUserAndUpdate(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID cellarId, @RequestBody @Validated CellarPayload body, BindingResult validationResult) {
+    public CellarDTO findByIdAndUserAndUpdate(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID cellarId, @RequestBody @Validated CellarPayload body, BindingResult validationResult) {
         // It receives a CellarPayload object containing the updated cellar data and validates it using the @Validated annotation
         // If there are validation errors, it throws a BadRequestException with the error messages
         if (validationResult.hasErrors()) {
