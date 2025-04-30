@@ -9,7 +9,6 @@ package andrea_freddi.CAPSTONE_PROJECT.payloads;
 import andrea_freddi.CAPSTONE_PROJECT.entities.BottleSize;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record CellarWineDTO(
@@ -18,7 +17,7 @@ public record CellarWineDTO(
         BottleSize size,
         boolean isPublic,
         String personalNotes,
-        LocalDateTime purchaseDate,
+        Integer purchaseDate,
         BigDecimal purchasePrice,
         BigDecimal askingPrice,
         Float myScore,

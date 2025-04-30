@@ -76,7 +76,7 @@ public class User implements UserDetails {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.role = Role.USER; // everyone is created as USER by default
+        this.role = Role.USER; // everyone is created as a USER by default
         this.publicProfile = true; // default value for public profile
         this.registrationDate = LocalDateTime.now(); // set registration date to today
     }

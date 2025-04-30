@@ -6,9 +6,9 @@ import jakarta.validation.constraints.*;
 import java.util.List;
 
 /*
- * WinePayload is used to receive wine data from the client
- * It includes validation annotations for proper input validation
- * Admins may also specify the wine status manually
+ * WinePayload is used to receive wine data from the client.
+ * It includes validation annotations to ensure input correctness.
+ * Admins may also specify the wine status and scoring manually.
  */
 
 public record WinePayload(
@@ -65,6 +65,16 @@ public record WinePayload(
         @Size(max = 50, message = "Barcode must be shorter")
         String barcode,
 
-        WineStatus status // Optional field, only admins may use this
+        // Optional scoring fields (typically set by admins)
+        @DecimalMin(value = "0.0", inclusive = false, message = "Professional score must be positive")
+        @DecimalMax(value = "100.0", message = "Professional score must be realistic")
+        Float professionalScore,
+
+        @DecimalMin(value = "0.0", inclusive = false, message = "Community score must be positive")
+        @DecimalMax(value = "100.0", message = "Community score must be realistic")
+        Float communityScore,
+
+        // Optional field - only admins should set this
+        WineStatus status
 ) {
 }

@@ -23,6 +23,7 @@ public record AddressPayload(
         @Size(max = 50)
         String city,
 
+        @NotBlank(message = "Province is required")
         @Size(max = 50)
         String province,
 

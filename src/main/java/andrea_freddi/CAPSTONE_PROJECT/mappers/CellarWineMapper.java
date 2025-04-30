@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class CellarWineMapper {
 
     // Converts a CellarWine entity to a CellarWineDTO
-    public static CellarWineDTO cellarWineToDTO(CellarWine cellarWine) {
+    public CellarWineDTO cellarWineToDTO(CellarWine cellarWine) {
         if (cellarWine == null) return null;
 
         return new CellarWineDTO(

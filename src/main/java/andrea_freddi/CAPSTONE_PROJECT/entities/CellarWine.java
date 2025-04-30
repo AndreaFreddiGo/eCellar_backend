@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 // creates the CellarWine class and manages Getter and Setter and empty constructor with lombok
@@ -33,7 +32,7 @@ public class CellarWine {
     @Column(name = "personal_notes")
     private String personalNotes;
     @Column(name = "purchase_date")
-    private LocalDateTime purchaseDate;
+    private Integer purchaseDate;
     @Column(name = "purchase_price")
     private BigDecimal purchasePrice;
     @Column(name = "asking_price")
@@ -76,6 +75,7 @@ public class CellarWine {
                 ", purchaseDate=" + purchaseDate +
                 ", purchasePrice=" + purchasePrice +
                 ", askingPrice=" + askingPrice +
+                ", myScore=" + myScore +
                 ", userId=" + (user != null ? user.getId() : "null") +
                 ", wineId=" + (wine != null ? wine.getId() : "null") +
                 ", cellarId=" + (cellar != null ? cellar.getId() : "null") +
