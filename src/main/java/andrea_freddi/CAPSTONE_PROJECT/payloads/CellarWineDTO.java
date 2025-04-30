@@ -20,7 +20,7 @@ public record CellarWineDTO(
         Integer purchaseDate,
         BigDecimal purchasePrice,
         BigDecimal askingPrice,
-        Float myScore,
+        Integer myScore,
         UUID userId,
         UUID cellarId,
         UUID wineId

@@ -38,7 +38,7 @@ public class CellarWine {
     @Column(name = "asking_price")
     private BigDecimal askingPrice;
     @Column(name = "my_score")
-    private Float myScore;
+    private Integer myScore;
 
     // relations between CellarWine and other entities: User, Wine and Cellar
     // a CellarWine is associated with a User, a Wine and a Cellar
@@ -57,12 +57,32 @@ public class CellarWine {
     @JoinColumn(name = "cellar_id", nullable = false)
     private Cellar cellar;
 
-    public CellarWine(int quantity, User user, Wine wine, boolean publicWine) {
+    public CellarWine(
+            int quantity,
+            BottleSize size,
+            boolean isPublic,
+            String personalNotes,
+            Integer purchaseDate,
+            BigDecimal purchasePrice,
+            BigDecimal askingPrice,
+            Integer myScore,
+            Cellar cellar,
+            Wine wine,
+            User user
+    ) {
         this.quantity = quantity;
-        this.user = user;
+        this.size = size;
+        this.isPublic = isPublic;
+        this.personalNotes = personalNotes;
+        this.purchaseDate = purchaseDate;
+        this.purchasePrice = purchasePrice;
+        this.askingPrice = askingPrice;
+        this.myScore = myScore;
+        this.cellar = cellar;
         this.wine = wine;
-        this.isPublic = publicWine;
+        this.user = user;
     }
+
 
     @Override
     public String toString() {

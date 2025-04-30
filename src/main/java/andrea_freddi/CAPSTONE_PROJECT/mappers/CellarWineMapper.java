@@ -23,7 +23,7 @@ public class CellarWineMapper {
                 cellarWine.getPurchasePrice(),
                 cellarWine.getAskingPrice(),
                 cellarWine.getMyScore(),
-                cellarWine.getUser() != null ? cellarWine.getCellar().getId() : null,
+                cellarWine.getUser() != null ? cellarWine.getUser().getId() : null,
                 cellarWine.getCellar() != null ? cellarWine.getCellar().getId() : null,
                 cellarWine.getWine() != null ? cellarWine.getWine().getId() : null
         );

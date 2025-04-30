@@ -39,6 +39,14 @@ public class CellarWinesService {
     @Autowired
     private CellarWineMapper cellarWineMapper;
 
+    // The CellarsService is injected to handle operations related to cellars
+    @Autowired
+    private CellarsService cellarService;
+
+    // The WinesService is injected to handle operations related to wines
+    @Autowired
+    private WinesService wineService;
+
     // This method finds a CellarWine by its ID
     public CellarWine findById(UUID cellarWineId) {
         return this.cellarWinesRepository.findById(cellarWineId).orElseThrow(
@@ -70,8 +78,13 @@ public class CellarWinesService {
     }
 
     // This method saves a new CellarWine
-    public CellarWineDTO save(CellarWinePayload body, User user, Cellar cellar, Wine wine) {
-        CellarWine newCellarWine = new CellarWine(
+    public CellarWineDTO save(CellarWinePayload body, User user) {
+        Cellar cellar = cellarService.findById(body.cellarId());
+        securityUtils.checkOwnershipOrAdmin(user, cellar.getUser().getId());
+
+        Wine wine = wineService.findById(body.wineId());
+
+        CellarWine newWine = new CellarWine(
                 body.quantity(),
                 body.size(),
                 body.isPublic(),
@@ -80,12 +93,14 @@ public class CellarWinesService {
                 body.purchasePrice(),
                 body.askingPrice(),
                 body.myScore(),
-                user,
                 cellar,
-                wine
+                wine,
+                user
         );
-        return cellarWineMapper.cellarWineToDTO(this.cellarWinesRepository.save(newCellarWine));
+
+        return cellarWineMapper.cellarWineToDTO(cellarWinesRepository.save(newWine));
     }
+
 
     // This method updates an existing CellarWine by its ID
     public CellarWineDTO findByIdAndUserAndUpdate(UUID cellarWineId, CellarWinePayload body, User user) {

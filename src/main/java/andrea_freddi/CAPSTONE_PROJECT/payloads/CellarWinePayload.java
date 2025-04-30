@@ -27,8 +27,8 @@ public record CellarWinePayload(
         @Size(max = 1000, message = "Notes are too long")
         String personalNotes,
 
-        @PastOrPresent(message = "Purchase date cannot be in the future")
-        @Min(1900) @Max(2100)
+        @Min(value = 1900, message = "Purchase year must be valid")
+        @Max(value = 2100, message = "Purchase year must be valid")
         Integer purchaseDate,
 
         @DecimalMin(value = "0.0", inclusive = false, message = "Purchase price must be positive")
