@@ -16,11 +16,24 @@ public class SecurityUtils {
      * @param user    the authenticated user
      * @param ownerId the UUID of the resource owner
      */
-
-    // This method checks if the user is the owner of the resource or an admin
     public void checkOwnershipOrAdmin(User user, UUID ownerId) {
         if (!user.getId().equals(ownerId) && !user.isAdmin()) {
             throw new BadRequestException("You are not authorized to access this resource!");
         }
     }
+
+    /**
+     * Checks if the user has admin privileges.
+     *
+     * @param user the authenticated user
+     * @return true if a user is an admin, false otherwise
+     */
+    public boolean isAdmin(User user) {
+        if (user.isAdmin()) {
+            return true;
+        } else {
+            throw new BadRequestException("You are not authorized to access this resource!");
+        }
+    }
 }
+

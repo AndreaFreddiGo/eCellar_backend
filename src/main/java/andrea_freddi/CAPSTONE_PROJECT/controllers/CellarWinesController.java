@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 */
 
 @RestController
-@RequestMapping("/CellarWines")
+@RequestMapping("/cellarWines")
 public class CellarWinesController {
     @Autowired
     private CellarWinesService cellarWinesService; // Injecting the CellarWinesService to handle cellar wine-related operations
@@ -90,6 +90,7 @@ public class CellarWinesController {
     // this method is used to delete a cellar wine in the database by the current authenticated user
     @DeleteMapping("/me/{cellarWineId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    // this status code indicates that the request was successful and the resource was deleted: 204
     // this status code indicates that the request was successful and there is no content to return: 204
     public void findByIdAndUserAndDelete(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID cellarWineId) {
         this.cellarWinesService.findByIdAndUserAndDelete(cellarWineId, currentAuthenticatedUser);
