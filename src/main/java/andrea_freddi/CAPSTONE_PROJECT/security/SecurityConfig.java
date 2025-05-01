@@ -2,6 +2,7 @@ package andrea_freddi.CAPSTONE_PROJECT.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -9,6 +10,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 // This class is used to configure Spring Security
 // It is used to disable the default login form
@@ -26,6 +33,7 @@ public class SecurityConfig {
         // It sets the session management to stateless, meaning that no session will be created or used by Spring Security
         httpSecurity.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry.requestMatchers("/**").permitAll()); // It allows all requests to be authorized because we use JWT
+        httpSecurity.cors(Customizer.withDefaults()); // It enables CORS support with default settings
         return httpSecurity.build();
     }
 
@@ -33,6 +41,18 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder getBCrypt() {
         return new BCryptPasswordEncoder(12);
+    }
+
+    // This method is used to create a CorsConfigurationSource bean
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Whitelist of allowed origins
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Apply the configuration to all URLs
+        return source;
     }
 
 }
