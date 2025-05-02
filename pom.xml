@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>andrea_freddi</groupId>
-    <artifactId>CAPSTONE_PROJECT</artifactId>
+    <artifactId>eCellar_backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>CAPSTONE_PROJECT</name>
+    <name>eCellar_backend</name>
     <description>Demo project for Spring Boot</description>
     <url/>
     <licenses>
