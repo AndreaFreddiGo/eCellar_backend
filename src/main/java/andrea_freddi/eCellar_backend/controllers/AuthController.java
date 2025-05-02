@@ -33,10 +33,12 @@ public class AuthController {
 
     // this method handles the login request
     @PostMapping("/login")
-    public LoginDTO login(@RequestBody LoginPayload body) {
-        // It receives a LoginPayload object containing the user's email and password
-        // and returns a LoginDTO object containing the generated JWT token
-        return new LoginDTO(this.authService.checkCredentialsAndGenerateToken(body));
+    public LoginDTO login(@RequestBody LoginPayload body) { // It receives a LoginPayload object containing the user's email and password
+        // Then it founds the user by email using the UsersService and the token is generated using the AuthService
+        User user = this.usersService.findByEmail(body.email());
+        String token = authService.checkCredentialsAndGenerateToken(body);
+        // and returns a LoginDTO object containing the generated JWT token and the user's details
+        return new LoginDTO(token, user.getName(), user.getUsername(), user.getId(), user.getProfilePicture());
     }
 
     // this method handles the registration request

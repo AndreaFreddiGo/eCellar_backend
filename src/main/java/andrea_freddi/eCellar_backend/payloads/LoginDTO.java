@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public record LoginDTO(
         String token,
+        String name,
         String username,
         UUID userId,
         String profilePicture
