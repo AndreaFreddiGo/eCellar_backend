@@ -129,6 +129,19 @@ public class WinesService {
         return wineMapper.wineToDTO(savedWine);
     }
 
+    // This method saves multiple wines
+    public List<WineDTO> saveAll(List<WineDTO> wineDTOs) {
+        List<Wine> wines = wineDTOs.stream()
+                .map(wineMapper::wineDTOToEntity)  //
+                .toList();
+
+        List<Wine> saved = winesRepository.saveAll(wines);
+
+        return saved.stream()
+                .map(wineMapper::wineToDTO)
+                .toList();
+    }
+    
     // This method updates an existing wine
     @Transactional // This annotation indicates that the method should be executed within a transaction
     public WineDTO findByIdAndUpdate(UUID wineId, WinePayload body, User user) {

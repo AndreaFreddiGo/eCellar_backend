@@ -55,5 +55,37 @@ public class WineMapper {
                 .map(this::wineToDTO)
                 .orElse(null);
     }
+
+    public Wine wineDTOToEntity(WineDTO dto) {
+        if (dto == null) return null;
+
+        Wine wine = new Wine();
+        wine.setName(dto.name());
+        wine.setProducer(dto.producer());
+        wine.setVintage(dto.vintage());
+        wine.setAbv(dto.abv());
+        wine.setGrapeVarieties(dto.grapeVarieties());
+        wine.setAppellation(dto.appellation());
+        wine.setCountry(dto.country());
+        wine.setRegion(dto.region());
+        wine.setColor(dto.color());
+        wine.setSweetness(dto.sweetness());
+        wine.setEffervescence(dto.effervescence());
+        wine.setCategory(dto.category());
+        wine.setDescription(dto.description());
+        wine.setImageUrl(dto.imageUrl());
+        wine.setBeginConsumeYear(dto.beginConsumeYear());
+        wine.setEndConsumeYear(dto.endConsumeYear());
+        wine.setDrinkability(dto.drinkability());
+        wine.setBarcode(dto.barcode());
+        wine.setProfessionalScore(dto.professionalScore());
+        wine.setCommunityScore(dto.communityScore());
+        wine.setStatus(dto.status());
+        // createdBy and verifiedBy intentionally omitted
+
+        return wine;
+    }
+
+
 }
 
