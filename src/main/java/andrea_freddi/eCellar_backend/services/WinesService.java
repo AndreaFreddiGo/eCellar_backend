@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -129,19 +130,33 @@ public class WinesService {
         return wineMapper.wineToDTO(savedWine);
     }
 
-    // This method saves multiple wines
-    public List<WineDTO> saveAll(List<WineDTO> wineDTOs) {
-        List<Wine> wines = wineDTOs.stream()
-                .map(wineMapper::wineDTOToEntity)  //
-                .toList();
+    // This method saves multiple wines and indexes them in Elasticsearch
+    @Transactional
+    public List<WineDTO> saveAll(List<WineDTO> wineDTOs, User user) {
+        List<WineDTO> savedDTOs = new ArrayList<>();
 
-        List<Wine> saved = winesRepository.saveAll(wines);
+        for (WineDTO dto : wineDTOs) {
+            boolean exists = winesRepository.findByNameAndProducerAndVintage(
+                    dto.name().trim().toLowerCase(),
+                    dto.producer().trim().toLowerCase(),
+                    dto.vintage()
+            ).isPresent();
 
-        return saved.stream()
-                .map(wineMapper::wineToDTO)
-                .toList();
+            if (!exists) {
+                Wine wine = wineMapper.wineDTOToEntity(dto);
+                wine.setCreatedBy(user);
+                wine.setStatus(user.isAdmin() ? WineStatus.VERIFIED : WineStatus.USER_SUBMITTED);
+
+                Wine savedWine = winesRepository.save(wine);
+                winesSearchRepository.save(WineDocument.fromEntity(savedWine));
+                savedDTOs.add(wineMapper.wineToDTO(savedWine));
+            }
+        }
+
+        return savedDTOs;
     }
-    
+
+
     // This method updates an existing wine
     @Transactional // This annotation indicates that the method should be executed within a transaction
     public WineDTO findByIdAndUpdate(UUID wineId, WinePayload body, User user) {

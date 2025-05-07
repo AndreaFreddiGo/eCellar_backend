@@ -2,7 +2,9 @@ package andrea_freddi.eCellar_backend.services;
 
 import andrea_freddi.eCellar_backend.entities.User;
 import andrea_freddi.eCellar_backend.exception.BadRequestException;
+import andrea_freddi.eCellar_backend.mappers.UserMapper;
 import andrea_freddi.eCellar_backend.payloads.PasswordUpdatePayload;
+import andrea_freddi.eCellar_backend.payloads.UserDTO;
 import andrea_freddi.eCellar_backend.payloads.UserPayload;
 import andrea_freddi.eCellar_backend.payloads.UserUpdatePayload;
 import andrea_freddi.eCellar_backend.repositories.UsersRepository;
@@ -34,6 +36,10 @@ public class UsersService {
     // The SecurityUtils is injected into this service to handle security-related operations
     @Autowired
     private SecurityUtils securityUtils;
+
+    // The UserMapper is injected to convert entities to DTOs
+    @Autowired
+    private UserMapper userMapper;
 
     // This method finds a user by their id
     public User findById(UUID userId) {
@@ -90,8 +96,8 @@ public class UsersService {
         return this.usersRepository.save(newUser);
     }
 
-    // This method updates an existing user
-    public User findByIdAndUpdate(UUID id, UserUpdatePayload body) {
+    // This method updates an existing user and returns a DTO
+    public UserDTO findByIdAndUpdate(UUID id, UserUpdatePayload body) {
         User found = this.findById(id);
         String normalizedEmail = body.email().toLowerCase();
         String normalizedUsername = body.username().toLowerCase();
@@ -122,9 +128,10 @@ public class UsersService {
         found.setPreferredLanguage(body.preferredLanguage());
         found.setPublicProfile(body.publicProfile());
 
-        return this.usersRepository.save(found);
-    }
+        this.usersRepository.save(found);
 
+        return userMapper.userToDTO(found);
+    }
 
     // This method updates a user's password
     public User findByIdAndUpdatePassword(UUID id, PasswordUpdatePayload body) {

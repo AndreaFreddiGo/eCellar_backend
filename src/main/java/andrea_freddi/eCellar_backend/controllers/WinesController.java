@@ -86,9 +86,10 @@ public class WinesController {
 
     // this method is used to add multiple wines to the database
     @PostMapping("/bulk")
-    public List<WineDTO> createBulk(@RequestBody List<WineDTO> wineDTOs) {
-        return winesService.saveAll(wineDTOs);
+    public List<WineDTO> createBulk(@AuthenticationPrincipal User currentAuthenticatedUser, @RequestBody List<WineDTO> wineDTOs) {
+        return winesService.saveAll(wineDTOs, currentAuthenticatedUser);
     }
+
 
     // all the following endpoints are used to manage wines by the current authenticated user
     // this method is used to get all wines visible to the current authenticated user

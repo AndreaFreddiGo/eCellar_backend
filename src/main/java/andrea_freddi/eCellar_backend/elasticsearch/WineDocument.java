@@ -1,6 +1,7 @@
 package andrea_freddi.eCellar_backend.elasticsearch;
 
 import andrea_freddi.eCellar_backend.entities.Wine;
+import andrea_freddi.eCellar_backend.entities.WineColor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,17 +18,23 @@ import java.util.UUID;
 public class WineDocument {
     @Id
     private UUID id;
+
     @MultiField(mainField = @Field(type = FieldType.Text, analyzer = "standard"),
             otherFields = {
                     @InnerField(suffix = "keyword", type = FieldType.Keyword)
             })
     private String name;
+
     private String producer;
+    @Field(type = FieldType.Integer)
     private Integer vintage;
     private List<String> grapeVarieties;
     private String appellation;
     private String country;
     private String region;
+
+    @Field(type = FieldType.Keyword)
+    private WineColor color;
 
     public WineDocument(Wine wine) {
         this.id = wine.getId();
@@ -38,6 +45,7 @@ public class WineDocument {
         this.appellation = wine.getAppellation();
         this.country = wine.getCountry();
         this.region = wine.getRegion();
+        this.color = wine.getColor();
     }
 
     public static WineDocument fromEntity(Wine wine) {
@@ -55,6 +63,7 @@ public class WineDocument {
                 ", appellation='" + appellation + '\'' +
                 ", country='" + country + '\'' +
                 ", region='" + region + '\'' +
+                ", color=" + color +
                 '}';
     }
 }

@@ -2,8 +2,8 @@ package andrea_freddi.eCellar_backend.payloads;
 
 import java.time.LocalDateTime;
 
-// creo una classe DTO per definire come mi verranno restituiti gli errori
-// uso Payload per quello che devo ricevere in costruzione e DTO per quello che restituisco
+// This class is used to return the error message to the client
+// It contains the message and the timestamp of the error
 
 public record ErrorsDTO(
         String message,
