@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -91,6 +92,12 @@ public class CellarsController {
             throw new BadRequestException("There were errors in the payload! " + message);
         }
         return this.cellarsService.findByIdAndUserAndUpdate(cellarId, body, currentAuthenticatedUser);
+    }
+
+    // this method is used to get all the cellars from the database by the current authenticated user
+    @GetMapping("/me")
+    public List<CellarDTO> findAllByUser(@AuthenticationPrincipal User currentAuthenticatedUser) {
+        return this.cellarsService.findAllByUserId(currentAuthenticatedUser);
     }
 
     // this method is used to delete a cellar in the database by the current authenticated user
