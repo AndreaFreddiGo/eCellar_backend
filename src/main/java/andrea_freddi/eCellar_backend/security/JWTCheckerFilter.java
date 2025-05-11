@@ -55,8 +55,17 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
 
     // This method excludes the filter from being applied to certain paths
     // In this case, it excludes the paths that start with "/auth/"
+    // "/login/", "/oauth2/", and "/error"
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return new AntPathMatcher().match("/auth/**", request.getServletPath());
+        String path = request.getServletPath();
+        System.out.println("Skipping filter for path: " + path);
+        AntPathMatcher matcher = new AntPathMatcher();
+        return matcher.match("/auth/**", path)
+                || matcher.match("/login/**", path)
+                || matcher.match("/oauth2/**", path)
+                || matcher.match("/error", path)
+                || matcher.match("/login/oauth2/code/**", path);
     }
+
 }

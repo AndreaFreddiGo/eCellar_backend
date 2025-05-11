@@ -1,5 +1,6 @@
 package andrea_freddi.eCellar_backend.services;
 
+import andrea_freddi.eCellar_backend.entities.CustomOAuth2User;
 import andrea_freddi.eCellar_backend.entities.User;
 import andrea_freddi.eCellar_backend.exception.UnauthorizedException;
 import andrea_freddi.eCellar_backend.payloads.LoginPayload;
@@ -47,5 +48,10 @@ public class AuthService {
 
         User user = usersService.findOrCreateGoogleUser(email, name, picture);
         return jwt.createToken(user);
+    }
+
+    // This method handles Google login with a custom OAuth2User
+    public String handleGoogleLogin(CustomOAuth2User customUser) {
+        return jwt.createToken(customUser.getUser());
     }
 }

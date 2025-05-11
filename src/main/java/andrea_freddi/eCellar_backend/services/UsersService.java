@@ -1,5 +1,6 @@
 package andrea_freddi.eCellar_backend.services;
 
+import andrea_freddi.eCellar_backend.entities.Role;
 import andrea_freddi.eCellar_backend.entities.User;
 import andrea_freddi.eCellar_backend.exception.BadRequestException;
 import andrea_freddi.eCellar_backend.mappers.UserMapper;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 // This class is a service that interacts with the UsersRepository to perform operations related to users
@@ -161,7 +163,10 @@ public class UsersService {
                 .orElseGet(() -> {
                     User newUser = new User();
                     newUser.setEmail(email);
-                    newUser.setName(fullName);
+                    String[] nameParts = fullName.trim().split(" ", 2); // split into at most 2 parts
+                    newUser.setName(nameParts[0]); // es. "Andrea"
+                    newUser.setSurname(nameParts.length > 1 ? nameParts[1] : "");
+                    
 
                     // This generates a random username based on the email and a random suffix
                     String baseUsername = email.split("@")[0].replaceAll("[^a-zA-Z0-9]", "");
@@ -173,6 +178,15 @@ public class UsersService {
 
                     // This sets the password to a default value ("GOOGLE") since Google users don't have a password
                     newUser.setPassword("GOOGLE");
+
+                    // This sets the registration date to the current date
+                    newUser.setRegistrationDate(LocalDateTime.now());
+
+                    // This sets the public profile to true by default
+                    newUser.setPublicProfile(true);
+
+                    // This sets the role to USER by default
+                    newUser.setRole(Role.USER);
 
                     return usersRepository.save(newUser);
                 });

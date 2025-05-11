@@ -1,7 +1,10 @@
 package andrea_freddi.eCellar_backend.security;
 
+import andrea_freddi.eCellar_backend.services.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -24,6 +28,11 @@ import java.util.List;
 @EnableWebSecurity // per abilitare la configurazione di Spring Security
 @EnableMethodSecurity // per poter utilizzare le regole di AUTORIZZAZIONE con @PreAuthorize
 public class SecurityConfig {
+
+    @Autowired
+    @Lazy
+    private AuthService authService;
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.disable()); // It disables the default login form
@@ -36,8 +45,13 @@ public class SecurityConfig {
         httpSecurity.cors(Customizer.withDefaults()); // It enables CORS support with default settings
         // It configures OAuth2 login with a default success URL
         httpSecurity.oauth2Login(oauth2 -> oauth2
-                .defaultSuccessUrl("/login/success", true)
+                .successHandler((request, response, authentication) -> {
+                    OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+                    String token = authService.handleGoogleLogin(principal);
+                    response.sendRedirect("http://localhost:3000/oauth2/redirect?token=" + token);
+                })
         );
+
         return httpSecurity.build();
     }
 

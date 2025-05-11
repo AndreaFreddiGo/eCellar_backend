@@ -1,7 +1,9 @@
 package andrea_freddi.eCellar_backend.controllers;
 
+import andrea_freddi.eCellar_backend.entities.CustomOAuth2User;
 import andrea_freddi.eCellar_backend.entities.User;
 import andrea_freddi.eCellar_backend.exception.BadRequestException;
+import andrea_freddi.eCellar_backend.exception.UnauthorizedException;
 import andrea_freddi.eCellar_backend.mappers.UserMapper;
 import andrea_freddi.eCellar_backend.payloads.UserDTO;
 import andrea_freddi.eCellar_backend.payloads.UserUpdatePayload;
@@ -91,9 +93,16 @@ public class UsersController {
 
     // this method is used to get the current authenticated user from the database
     @GetMapping("/me")
-    public UserDTO getProfile(@AuthenticationPrincipal User currentAuthenticatedUser) {
-        return userMapper.userToDTO(currentAuthenticatedUser);
+    public UserDTO getProfile(@AuthenticationPrincipal Object principal) {
+        if (principal instanceof User user) {
+            return userMapper.userToDTO(user);
+        } else if (principal instanceof CustomOAuth2User customUser) {
+            return userMapper.userToDTO(customUser.getUser());
+        } else {
+            throw new UnauthorizedException("Invalid user session");
+        }
     }
+
 
     // this method is used to update the current authenticated user in the database
     @PutMapping("/me")
