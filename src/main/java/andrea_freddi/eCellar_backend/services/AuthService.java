@@ -6,6 +6,7 @@ import andrea_freddi.eCellar_backend.payloads.LoginPayload;
 import andrea_freddi.eCellar_backend.tools.JWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 // This class is responsible for handling user authentication
@@ -36,5 +37,15 @@ public class AuthService {
             // If the password does not match, throwing an exception
             throw new UnauthorizedException("Wrong password!");
         }
+    }
+
+    // This method handles Google login
+    public String handleGoogleLogin(OAuth2User principal) {
+        String email = principal.getAttribute("email");
+        String name = principal.getAttribute("name");
+        String picture = principal.getAttribute("picture");
+
+        User user = usersService.findOrCreateGoogleUser(email, name, picture);
+        return jwt.createToken(user);
     }
 }

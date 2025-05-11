@@ -34,6 +34,10 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry.requestMatchers("/**").permitAll()); // It allows all requests to be authorized because we use JWT
         httpSecurity.cors(Customizer.withDefaults()); // It enables CORS support with default settings
+        // It configures OAuth2 login with a default success URL
+        httpSecurity.oauth2Login(oauth2 -> oauth2
+                .defaultSuccessUrl("/login/success", true)
+        );
         return httpSecurity.build();
     }
 
@@ -54,5 +58,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration); // Apply the configuration to all URLs
         return source;
     }
-
 }

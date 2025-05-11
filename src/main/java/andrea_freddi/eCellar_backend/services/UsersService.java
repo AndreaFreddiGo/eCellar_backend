@@ -154,4 +154,28 @@ public class UsersService {
         User found = this.findById(id);
         this.usersRepository.delete(found);
     }
+
+    // This method finds if a user, logged in with Google, already exists or creates a new one
+    public User findOrCreateGoogleUser(String email, String fullName, String pictureUrl) {
+        return usersRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setEmail(email);
+                    newUser.setName(fullName);
+
+                    // This generates a random username based on the email and a random suffix
+                    String baseUsername = email.split("@")[0].replaceAll("[^a-zA-Z0-9]", "");
+                    String randomSuffix = UUID.randomUUID().toString().substring(0, 6);
+                    newUser.setUsername(baseUsername + "_" + randomSuffix);
+
+                    // This sets the profile picture URL
+                    newUser.setProfilePicture(pictureUrl);
+
+                    // This sets the password to a default value ("GOOGLE") since Google users don't have a password
+                    newUser.setPassword("GOOGLE");
+
+                    return usersRepository.save(newUser);
+                });
+    }
+
 }
