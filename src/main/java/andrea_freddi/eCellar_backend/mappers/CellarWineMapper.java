@@ -1,10 +1,9 @@
 package andrea_freddi.eCellar_backend.mappers;
 
 import andrea_freddi.eCellar_backend.entities.CellarWine;
+import andrea_freddi.eCellar_backend.entities.ProposalStatus;
 import andrea_freddi.eCellar_backend.payloads.CellarWineDTO;
 import org.springframework.stereotype.Component;
-
-// This class is responsible for mapping between CellarWine entities and CellarWineDTOs
 
 @Component
 public class CellarWineMapper {
@@ -13,8 +12,10 @@ public class CellarWineMapper {
     public CellarWineDTO cellarWineToDTO(CellarWine cellarWine) {
         if (cellarWine == null) return null;
 
-        assert cellarWine.getWine() != null;
-        assert cellarWine.getUser() != null;
+        boolean hasPendingProposal = cellarWine.getPurchaseProposals() != null &&
+                cellarWine.getPurchaseProposals().stream()
+                        .anyMatch(p -> p.getStatus() == ProposalStatus.PENDING);
+
         return new CellarWineDTO(
                 cellarWine.getId(),
                 cellarWine.getQuantity(),
@@ -31,7 +32,8 @@ public class CellarWineMapper {
                 cellarWine.getWine().getName(),
                 cellarWine.getWine().getProducer(),
                 cellarWine.getWine().getVintage(),
-                cellarWine.getUser().getUsername()
+                cellarWine.getUser().getUsername(),
+                hasPendingProposal
         );
     }
 }

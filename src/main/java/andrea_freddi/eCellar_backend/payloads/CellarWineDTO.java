@@ -27,6 +27,7 @@ public record CellarWineDTO(
         String wineName,
         String wineProducer,
         Integer wineVintage,
-        String username
+        String username,
+        Boolean hasPendingProposal
 ) {
 }

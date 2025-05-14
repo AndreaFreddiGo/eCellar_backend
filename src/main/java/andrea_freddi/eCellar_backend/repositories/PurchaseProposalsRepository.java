@@ -20,4 +20,8 @@ public interface PurchaseProposalsRepository extends JpaRepository<PurchasePropo
 
     // This method retrieves a list of PurchaseProposal entities associated with a specific CellarWine and ProposalStatus
     List<PurchaseProposal> findByCellarWineAndStatus(CellarWine cellarWine, ProposalStatus status);
+
+    // This method retrieves a list of PurchaseProposal entities associated with a specific CellarWine and User
+    List<PurchaseProposal> findByCellarWine_Id(UUID cellarWineId);
+
 }

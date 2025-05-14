@@ -84,6 +84,14 @@ public class PurchaseProposalsController {
         return this.purchaseProposalsService.findByIdAndUser(purchaseProposalId, currentUser);
     }
 
+    @GetMapping("/me/byCellarWine/{cellarWineId}")
+    public List<PurchaseProposalDTO> findAllByCellarWineForOwner(
+            @PathVariable UUID cellarWineId,
+            @AuthenticationPrincipal User currentUser) {
+        return purchaseProposalsService.findAllProposalsForWine(cellarWineId, currentUser);
+    }
+
+
     // this method is used to update a proposal in the database by the current authenticated user
     @PutMapping("/me/{purchaseProposalId}")
     public PurchaseProposalDTO findByIdAndUserAndUpdate(@PathVariable UUID purchaseProposalId,

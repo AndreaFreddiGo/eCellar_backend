@@ -54,6 +54,13 @@ public class CellarWinesService {
         );
     }
 
+    public List<CellarWineDTO> findAllByWineIds(List<UUID> wineIds) {
+        return cellarWinesRepository.findAllByWineIdIn(wineIds).stream()
+                .map(cellarWineMapper::cellarWineToDTO)
+                .toList();
+    }
+
+
     // This method finds a CellarWine by its ID and user
     public CellarWineDTO findByIdAndUser(UUID cellarWineId, User user) {
         CellarWine found = this.findById(cellarWineId);

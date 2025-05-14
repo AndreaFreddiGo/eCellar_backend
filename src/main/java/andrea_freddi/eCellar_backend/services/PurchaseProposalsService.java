@@ -75,6 +75,21 @@ public class PurchaseProposalsService {
                 .collect(Collectors.toList());
     }
 
+    // This method returns all proposals received for a specific cellar wine, only if the current user is the owner
+    public List<PurchaseProposalDTO> findAllProposalsForWine(UUID cellarWineId, User currentUser) {
+        CellarWine wine = cellarWinesService.findById(cellarWineId);
+
+        // Check that the current user is the owner of the wine
+        securityUtils.checkOwnershipOrAdmin(currentUser, wine.getUser().getId());
+
+        List<PurchaseProposal> proposals = purchaseProposalsRepository.findByCellarWine_Id(cellarWineId);
+
+        return proposals.stream()
+                .map(purchaseProposalMapper::purchaseProposalDTO)
+                .collect(Collectors.toList());
+    }
+
+
     // This method saves a new proposal
     public PurchaseProposalDTO save(PurchaseProposalPayload body, User user) {
         CellarWine cellarWine = cellarWinesService.findById(body.cellarWineId());

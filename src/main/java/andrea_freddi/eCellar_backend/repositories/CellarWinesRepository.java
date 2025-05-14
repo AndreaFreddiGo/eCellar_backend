@@ -15,4 +15,7 @@ public interface CellarWinesRepository extends JpaRepository<CellarWine, UUID> {
     List<CellarWine> findAllByUser(User user);
 
     List<CellarWine> findAllByCellar(Cellar cellar);
+
+    List<CellarWine> findAllByWineIdIn(List<UUID> wineIds);
+
 }

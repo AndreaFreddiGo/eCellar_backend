@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 // creates the CellarWine class and manages Getter and Setter and empty constructor with lombok
@@ -56,6 +57,9 @@ public class CellarWine {
     @ManyToOne(optional = false)
     @JoinColumn(name = "cellar_id", nullable = false)
     private Cellar cellar;
+
+    @OneToMany(mappedBy = "cellarWine", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseProposal> purchaseProposals;
 
     public CellarWine(
             int quantity,

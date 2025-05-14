@@ -49,9 +49,14 @@ public class CellarWinesController {
 
     // this method is used to get a cellar wine by id from the database
     @GetMapping("/{cellarWineId}")
-    @PreAuthorize("hasAuthority('ADMIN')") // only users with an ADMIN role can access this endpoint
-    public CellarWine findById(@PathVariable UUID cellarId) {
-        return this.cellarWinesService.findById(cellarId);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public CellarWine findById(@PathVariable UUID cellarWineId) {
+        return this.cellarWinesService.findById(cellarWineId);
+    }
+
+    @PostMapping("/search/byWineIds")
+    public List<CellarWineDTO> findAllByWineIds(@RequestBody List<UUID> wineIds) {
+        return cellarWinesService.findAllByWineIds(wineIds);
     }
 
     // all the following endpoints are used to manage a cellar wine by the current authenticated user

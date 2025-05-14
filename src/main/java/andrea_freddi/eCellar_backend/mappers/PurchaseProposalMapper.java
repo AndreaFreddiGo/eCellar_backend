@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class PurchaseProposalMapper {
 
+    private final CellarWineMapper cellarWineMapper;
+
+    public PurchaseProposalMapper(CellarWineMapper cellarWineMapper) {
+        this.cellarWineMapper = cellarWineMapper;
+    }
+
     public PurchaseProposalDTO purchaseProposalDTO(PurchaseProposal proposal) {
         if (proposal == null) return null;
 
@@ -21,7 +27,11 @@ public class PurchaseProposalMapper {
                 proposal.getProposingPrice(),
                 proposal.getStatus(),
                 proposal.getProposalDate(),
-                proposal.getMessage()
+                proposal.getMessage(),
+                proposal.getCellarWine() != null
+                        ? cellarWineMapper.cellarWineToDTO(proposal.getCellarWine())
+                        : null // <--- nuovo campo wine
         );
     }
 }
+

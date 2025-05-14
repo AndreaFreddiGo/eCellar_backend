@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /*
- * This DTO represents the purchase proposal data returned to the client.
- * It hides internal details and simplifies the data format.
+ * This DTO represents the purchase proposal data returned to the client,
+ * including the related wine info (CellarWineDTO).
  */
 
 public record PurchaseProposalDTO(
@@ -19,6 +19,7 @@ public record PurchaseProposalDTO(
         BigDecimal proposingPrice,
         ProposalStatus status,
         LocalDateTime proposalDate,
-        String message
+        String message,
+        CellarWineDTO wine
 ) {
 }
