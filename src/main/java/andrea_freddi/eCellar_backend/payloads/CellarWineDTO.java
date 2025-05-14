@@ -26,6 +26,7 @@ public record CellarWineDTO(
         UUID wineId,
         String wineName,
         String wineProducer,
-        Integer wineVintage
+        Integer wineVintage,
+        String username
 ) {
 }
