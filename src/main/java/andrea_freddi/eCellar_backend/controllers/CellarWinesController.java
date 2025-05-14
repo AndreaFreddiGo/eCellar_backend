@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -73,6 +74,12 @@ public class CellarWinesController {
     public CellarWineDTO findByIdAndUser(@AuthenticationPrincipal User currentAuthenticatedUser, @PathVariable UUID cellarWineId) {
         return this.cellarWinesService.findByIdAndUser(cellarWineId, currentAuthenticatedUser);
     }
+
+    @GetMapping("/me/byCellar/{cellarId}")
+    public List<CellarWineDTO> findByCellarAndUser(@PathVariable UUID cellarId, @AuthenticationPrincipal User currentAuthenticatedUser) {
+        return this.cellarWinesService.findAllByCellarAndUser(cellarId, currentAuthenticatedUser);
+    }
+
 
     // this method is used to update a cellar wine in the database by the current authenticated user
     @PutMapping("/me/{cellarWineId}")

@@ -13,6 +13,7 @@ public class CellarWineMapper {
     public CellarWineDTO cellarWineToDTO(CellarWine cellarWine) {
         if (cellarWine == null) return null;
 
+        assert cellarWine.getWine() != null;
         return new CellarWineDTO(
                 cellarWine.getId(),
                 cellarWine.getQuantity(),
@@ -25,7 +26,10 @@ public class CellarWineMapper {
                 cellarWine.getMyScore(),
                 cellarWine.getUser() != null ? cellarWine.getUser().getId() : null,
                 cellarWine.getCellar() != null ? cellarWine.getCellar().getId() : null,
-                cellarWine.getWine() != null ? cellarWine.getWine().getId() : null
+                cellarWine.getWine().getId(),
+                cellarWine.getWine().getName(),
+                cellarWine.getWine().getProducer(),
+                cellarWine.getWine().getVintage()
         );
     }
 }

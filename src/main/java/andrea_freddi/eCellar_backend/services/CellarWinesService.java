@@ -62,6 +62,14 @@ public class CellarWinesService {
         return cellarWineMapper.cellarWineToDTO(found);
     }
 
+    // This method finds all CellarWines by cellar
+    public List<CellarWineDTO> findAllByCellarAndUser(UUID cellarId, User user) {
+        Cellar cellar = cellarService.findById(cellarId);
+        securityUtils.checkOwnershipOrAdmin(user, cellar.getUser().getId());
+        List<CellarWine> wines = cellarWinesRepository.findAllByCellar(cellar);
+        return wines.stream().map(cellarWineMapper::cellarWineToDTO).toList();
+    }
+
     // This method finds all CellarWines with pagination and sorting
     public Page<CellarWineDTO> findAll(int page, int size, String sortBy) {
         if (size > 50) size = 50;
